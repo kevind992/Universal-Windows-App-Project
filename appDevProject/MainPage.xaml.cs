@@ -26,5 +26,11 @@ namespace appDevProject
         {
             this.InitializeComponent();
         }
+
+        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            tbxSubmit.Visibility = Visibility.Collapsed;
+            btnSubmit.Visibility = Visibility.Collapsed;
+        }
     }
 }

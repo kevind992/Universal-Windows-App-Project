@@ -7,7 +7,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    <Grid x:Name="grdMain" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid x:Name="grdDesign">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="grdUserInput" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="tbxSubmit" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Height="10" Width="350"  BorderBrush="Black" />
+                <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="top" Content="Search" Width="191" Click="btnSubmit_Click"/>
+            </Grid>
+            <Rectangle Grid.Column="0">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{ThemeResource SystemAccentColor}" />
+                </Rectangle.Fill>
+            </Rectangle>
+            
+        </Grid>
+        
     </Grid>
 </Page>
