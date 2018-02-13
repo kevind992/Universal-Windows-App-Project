@@ -13,13 +13,14 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <TextBlock x:Name="tblResults" Margin="20" Grid.Column="1" Visibility="Collapsed"/>
             <Grid x:Name="grdUserInput" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBox x:Name="tbxSubmit" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Height="10" Width="350"  BorderBrush="Black" />
-                <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="top" Content="Search" Width="191" Click="btnSubmit_Click"/>
+                <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="top" Content="Search" Width="191" Click="btnSubmit_Click"/> 
             </Grid>
             <Rectangle Grid.Column="0">
                 <Rectangle.Fill>
