@@ -24,15 +24,18 @@ namespace appDevProject
     /// </summary>
     public sealed partial class MainPage : Page
     {
+
+        public string stopID;
+
         public MainPage()
         {
             this.InitializeComponent();
-            getData();
+            
         }
 
         async void getData()
         {
-            string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=184&format=json";
+            string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid="+ stopID + "&format=json";
 
             HttpClient client = new HttpClient();
 
@@ -40,12 +43,18 @@ namespace appDevProject
 
             var data = JsonConvert.DeserializeObject<Rootobject>(response);
 
-            tblResults.Text = data.stopid.ToString();
+            tblResults.Text = data.results[0].route + " | Next bus is in " + data.results[0].departureduetime + " min"; 
 
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
+            stopID = tbxSubmit.Text;
+
+            System.Diagnostics.Debug.WriteLine(stopID);
+
+            getData();
+
             tbxSubmit.Visibility = Visibility.Collapsed;
             btnSubmit.Visibility = Visibility.Collapsed;
             tblResults.Visibility = Visibility.Visible;
