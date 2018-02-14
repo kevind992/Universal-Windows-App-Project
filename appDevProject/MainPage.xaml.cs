@@ -33,7 +33,7 @@ namespace appDevProject
             
         }
 
-        async void getData()
+        async void getSearchResults()
         {
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid="+ stopID + "&format=json";
 
@@ -45,6 +45,19 @@ namespace appDevProject
 
             tblResults.Text = data.results[0].route + " | Next bus is in " + data.results[0].departureduetime + " min"; 
 
+        }
+        async void getBusStops()
+        {
+            string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&format=json%22;";
+
+            HttpClient client = new HttpClient();
+
+            string response = await client.GetStringAsync(url);
+
+            var data = JsonConvert.DeserializeObject<RootBusStopobject>(response);
+
+
+                        
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
