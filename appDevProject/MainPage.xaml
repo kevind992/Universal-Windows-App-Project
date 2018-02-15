@@ -19,8 +19,20 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="tbxSubmit" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Height="10" Width="350"  BorderBrush="Black" />
-                <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="top" Content="Search" Width="191" Click="btnSubmit_Click"/> 
+                <!--<TextBox x:Name="tbxSubmit" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Height="10" Width="350"  BorderBrush="Black" />-->
+                <Button x:Name="btnStops1" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"  Height="30" Width="50" Margin="20">
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="flyStops1">
+                        </MenuFlyout>            
+                    </Button.Flyout>
+                </Button>
+                <Button x:Name="btnStops2" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top"  Height="30" Width="50" Margin="20">
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="flyStops2">
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+                <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Content="Search" Width="191" Click="btnSubmit_Click"/> 
             </Grid>
             <Rectangle Grid.Column="0">
                 <Rectangle.Fill>
