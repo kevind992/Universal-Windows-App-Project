@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using Windows.UI.Xaml;
@@ -53,8 +54,8 @@ namespace appDevProject
             string response2 = await client.GetStringAsync(url);
 
             var busData = JsonConvert.DeserializeObject<Rootobject>(response2);
-            int count = 0;
-            //System.Diagnostics.Debug.WriteLine(busData.results[186].shortname.ToString());
+           
+            System.Diagnostics.Debug.WriteLine("Loading Data..");
 
             for (int i = 1; i < busData.numberofresults; i++)
             {
@@ -62,27 +63,39 @@ namespace appDevProject
                 {
                     if(busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
                     {
-                        count++;
-                        System.Diagnostics.Debug.WriteLine("Loading Data..");
                         MenuFlyoutItem item = new MenuFlyoutItem();
                         item.Text = busData.results[i].fullname.ToString();
-                        item.Click += Item_Click;
+                        item.Click += Item_Click1;
                         flyStops1.Items.Add(item);
+                    }
+                }
+                if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
+                {
+                    if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
+                    {
+                        MenuFlyoutItem item = new MenuFlyoutItem();
+                        item.Text = busData.results[i].fullname.ToString();
+                        item.Click += Item_Click2;
                         flyStops2.Items.Add(item);
                     }
                 }
             }
+            
             System.Diagnostics.Debug.WriteLine("Data Loaded..");
-            System.Diagnostics.Debug.WriteLine(count);
         }
 
-        private void Item_Click(object sender, RoutedEventArgs e)
+        private void Item_Click1(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            tblStop1.Text = click.Text;       
+            //stopID1 = click.Text;
+            //System.Diagnostics.Debug.WriteLine(stopID);
+        }
 
-            stopID = click.Text;
-
-            System.Diagnostics.Debug.WriteLine(stopID);
+        private void Item_Click2(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            tblStop2.Text = click.Text;
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
@@ -93,7 +106,7 @@ namespace appDevProject
 
                 getSearchResults();
 
-                btnStops.Visibility = Visibility.Collapsed;
+                //btnStops.Visibility = Visibility.Collapsed;
                 btnSubmit.Visibility = Visibility.Collapsed;
                 tblResults.Visibility = Visibility.Visible;
             }
