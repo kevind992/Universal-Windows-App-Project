@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using Windows.UI.Xaml;
@@ -14,8 +16,13 @@ namespace appDevProject
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private string stopName1;
+        private string stopName2;
 
-        private string stopID;
+        private string stopID1;
+        private string stopID2;
+
+        private List<Result> galwayStops = new List<Result>();
 
         //Latitude and Longitude for area around Galway City
         private double galLatLow = 53.01347187;
@@ -29,17 +36,17 @@ namespace appDevProject
             getBusStops();
         }
 
-        async void getSearchResults()
+        async void getSearchResults(string stop)
         {
-            //string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid="+ stopID + "&format=json";
+            string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid="+ stop + "&format=json";
 
-            //HttpClient client = new HttpClient();
+            HttpClient client = new HttpClient();
 
-            //string response = await client.GetStringAsync(url);
+            string response = await client.GetStringAsync(url);
 
-            //var data = JsonConvert.DeserializeObject<Rootobject>(response);
+            var data = JsonConvert.DeserializeObject<Rootobject2>(response);
 
-            //tblResults.Text = data.results[0].route + " | Next bus is in " + data.results[0].departureduetime + " min"; 
+            tblResults.Text = data.results[0].route + " | Next bus is in " + data.results[0].departureduetime + " min"; 
 
         }
 
@@ -55,18 +62,21 @@ namespace appDevProject
 
             var busData = JsonConvert.DeserializeObject<Rootobject>(response2);
            
+          
+            System.Diagnostics.Debug.WriteLine("Inside If..");
             System.Diagnostics.Debug.WriteLine("Loading Data..");
 
             for (int i = 1; i < busData.numberofresults; i++)
             {
-                if(busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
+                if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
                 {
-                    if(busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
+                    if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
                     {
                         MenuFlyoutItem item = new MenuFlyoutItem();
                         item.Text = busData.results[i].fullname.ToString();
                         item.Click += Item_Click1;
                         flyStops1.Items.Add(item);
+                        galwayStops.Add(busData.results[i]);
                     }
                 }
                 if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
@@ -80,38 +90,55 @@ namespace appDevProject
                     }
                 }
             }
-            
-            System.Diagnostics.Debug.WriteLine("Data Loaded..");
+            System.Diagnostics.Debug.WriteLine("Data Loaded.."); 
         }
 
         private void Item_Click1(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem click = (MenuFlyoutItem)sender;
             tblStop1.Text = click.Text;       
-            //stopID1 = click.Text;
-            //System.Diagnostics.Debug.WriteLine(stopID);
+            stopName1 = click.Text;
+            System.Diagnostics.Debug.WriteLine(stopName1);
         }
 
         private void Item_Click2(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            stopName2 = click.Text;
             tblStop2.Text = click.Text;
+            System.Diagnostics.Debug.WriteLine(stopName2);
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine(stopID);
+                stopID1 = searchID(stopName1);
+                stopID2 = searchID(stopName2);
 
-                getSearchResults();
+                System.Diagnostics.Debug.WriteLine(stopID1);
+                System.Diagnostics.Debug.WriteLine(stopID2);
 
+                getSearchResults(stopID1);
                 //btnStops.Visibility = Visibility.Collapsed;
                 btnSubmit.Visibility = Visibility.Collapsed;
                 tblResults.Visibility = Visibility.Visible;
             }
             catch 
             {}
+        }
+        private string searchID(string s)
+        {
+            string id = "";
+
+            for(int i = 0; i < galwayStops.Count;i++)
+            {
+                if(galwayStops[i].fullname.Equals(s))
+                {
+                    id = galwayStops[i].stopid;
+                }
+            }
+            return id;
         }
     }
 }
