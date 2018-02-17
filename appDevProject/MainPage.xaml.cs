@@ -46,7 +46,7 @@ namespace appDevProject
 
             var data = JsonConvert.DeserializeObject<Rootobject2>(response);
 
-            tblResults.Text = data.results[0].route + " | Next bus is in " + data.results[0].departureduetime + " min"; 
+            lvListBuses1.ItemsSource = data.results;
 
         }
 
@@ -120,9 +120,10 @@ namespace appDevProject
                 System.Diagnostics.Debug.WriteLine(stopID2);
 
                 getSearchResults(stopID1);
-                //btnStops.Visibility = Visibility.Collapsed;
-                btnSubmit.Visibility = Visibility.Collapsed;
-                tblResults.Visibility = Visibility.Visible;
+
+                hideOptions();
+                showResults();
+
             }
             catch 
             {}
@@ -139,6 +140,19 @@ namespace appDevProject
                 }
             }
             return id;
+        }
+        private void hideOptions()
+        {
+            btnStops1.Visibility = Visibility.Collapsed;
+            btnStops2.Visibility = Visibility.Collapsed;
+            btnSubmit.Visibility = Visibility.Collapsed;
+            tblStop1.Visibility = Visibility.Collapsed;
+            tblStop2.Visibility = Visibility.Collapsed;
+        }
+        private void showResults()
+        {
+            lvListBuses1.Visibility = Visibility.Visible;
+            lvListBuses2.Visibility = Visibility.Visible;
         }
     }
 }
