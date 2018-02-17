@@ -16,6 +16,8 @@ namespace appDevProject
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private int stopTurn = 0;
+
         private string stopName1;
         private string stopName2;
 
@@ -46,7 +48,18 @@ namespace appDevProject
 
             var data = JsonConvert.DeserializeObject<Rootobject2>(response);
 
-            lvListBuses1.ItemsSource = data.results;
+            if(stopTurn == 0)
+            {
+                lvListBuses1.ItemsSource = data.results;
+                stopTurn = 1;
+            }
+            else
+            {
+                lvListBuses2.ItemsSource = data.results;
+                stopTurn = 0;
+            }
+
+            
 
         }
 
@@ -120,6 +133,7 @@ namespace appDevProject
                 System.Diagnostics.Debug.WriteLine(stopID2);
 
                 getSearchResults(stopID1);
+                getSearchResults(stopID2);
 
                 hideOptions();
                 showResults();

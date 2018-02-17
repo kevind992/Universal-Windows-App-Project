@@ -9,9 +9,10 @@
     <Page.Resources>
         <DataTemplate x:Key="myTemplate">
             <StackPanel Orientation="Horizontal" Margin="2,1,2,1">
-                <StackPanel Margin="1,0,1,0">
+                <StackPanel Margin="1,0,1,0" Orientation="Horizontal">
                     <TextBlock Text="{Binding Path= route}" Style="{StaticResource TitleTextBlockStyle}"/>
                     <TextBlock Text="{Binding Path= departureduetime}" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Text="min" Style="{StaticResource SubtitleTextBlockStyle}"/>
                 </StackPanel>
             </StackPanel>
         </DataTemplate>
@@ -28,11 +29,11 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <ListView x:Name="lvListBuses1" Visibility="Collapsed" Margin="10,50, 0, 0" BorderBrush="Blue" Grid.Column="1" Grid.Row="0"
-                  BorderThickness="1" Height="250"
+                  BorderThickness="1" Height="200"
                   ItemTemplate="{StaticResource myTemplate}">
                 </ListView>
                 <ListView x:Name="lvListBuses2" Visibility="Collapsed" Margin="10,50, 0, 0" BorderBrush="Blue" Grid.Column="1" Grid.Row="1"
-                  BorderThickness="1" Height="250"
+                  BorderThickness="1" Height="200"
                   ItemTemplate="{StaticResource myTemplate}">
                 </ListView>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom">
