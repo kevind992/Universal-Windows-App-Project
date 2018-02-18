@@ -7,8 +7,8 @@
     <ProjectGuid>{27414726-6C50-4FE9-8F6A-0B9B13E5CD3E}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>appDevProject</RootNamespace>
-    <AssemblyName>appDevProject</AssemblyName>
+    <RootNamespace>UWP_Main_App</RootNamespace>
+    <AssemblyName>UWP_Main_App</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.16299.0</TargetPlatformVersion>
