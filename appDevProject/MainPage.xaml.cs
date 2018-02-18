@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
+using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -135,6 +136,8 @@ namespace appDevProject
                 getSearchResults(stopID1);
                 getSearchResults(stopID2);
 
+                tileNotification(stopID1, stopName1);
+
                 hideOptions();
                 showResults();
 
@@ -142,6 +145,21 @@ namespace appDevProject
             catch 
             {}
         }
+        private void tileNotification(string id, string name)
+        {
+
+            var uri = String.Format("http://busstopservice20180218120834.azurewebsites.net/?stopID={0}&stopName={1}", id, name);
+
+            var tileContent = new Uri(uri);
+
+            var requestedInterval = PeriodicUpdateRecurrence.HalfHour;
+
+            var updater = TileUpdateManager.CreateTileUpdaterForApplication();
+            updater.StartPeriodicUpdate(tileContent, requestedInterval);
+
+        }
+
+
         private string searchID(string s)
         {
             string id = "";
