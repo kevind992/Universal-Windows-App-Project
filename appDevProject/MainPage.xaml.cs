@@ -148,7 +148,7 @@ namespace appDevProject
         private void tileNotification(string id, string name)
         {
 
-            var uri = String.Format("http://busstopservice20180218120834.azurewebsites.net/?stopID={0}&stopName={1}", id, name);
+            var uri = String.Format("http://busstopservice20180218022023.azurewebsites.net/?stopID={0}&stopName={1}", id, name);
 
             var tileContent = new Uri(uri);
 
