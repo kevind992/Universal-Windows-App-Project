@@ -4,9 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
+using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -39,6 +41,22 @@ namespace appDevProject
             getBusStops();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            //read the settings here
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            try
+            {
+                pvtOptions.SelectedIndex = (int)localSettings.Values["currentOption"];
+            }
+            catch
+            {
+                pvtOptions.SelectedIndex = 0;
+            }
+
+            base.OnNavigatedTo(e);
+        }
+
         async void getSearchResults(string stop)
         {
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid="+ stop + "&format=json";
@@ -59,9 +77,6 @@ namespace appDevProject
                 lvListBuses2.ItemsSource = data.results;
                 stopTurn = 0;
             }
-
-            
-
         }
 
         ObservableCollection<string> stops = new ObservableCollection<string>();
@@ -136,11 +151,13 @@ namespace appDevProject
                 getSearchResults(stopID1);
                 getSearchResults(stopID2);
 
-                tileNotification(stopID1, stopName1);
+                pvtOptions.SelectedIndex = 1;
+                pvtResults.Visibility = Visibility.Visible;
 
+                tileNotification(stopID1, stopName1);
+                
                 hideOptions();
                 showResults();
-
             }
             catch 
             {}
@@ -185,6 +202,14 @@ namespace appDevProject
         {
             lvListBuses1.Visibility = Visibility.Visible;
             lvListBuses2.Visibility = Visibility.Visible;
+        }
+
+        private void pvtOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplicationDataContainer localSettings =
+                ApplicationData.Current.LocalSettings;
+
+            localSettings.Values["currentOption"] = pvtOptions.SelectedIndex;
         }
     }
 }

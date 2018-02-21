@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
+
 namespace BusStop_Service.Controllers
 {
     public class HomeController : Controller
@@ -15,7 +16,6 @@ namespace BusStop_Service.Controllers
         // GET: Home
         public async Task<ActionResult> Index(string stopID, string stopName)
         {
-
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stopID + "&format=json";
 
             HttpClient client = new HttpClient();
@@ -24,11 +24,9 @@ namespace BusStop_Service.Controllers
 
             var data = JsonConvert.DeserializeObject<Rootobject>(response);
 
-
             ViewBag.BusNo = data.results[0].route;
             ViewBag.Time = data.results[0].departureduetime;
             ViewBag.Destination = "from " + stopName;
-
 
             return View();
         }
