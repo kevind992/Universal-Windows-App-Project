@@ -23,47 +23,7 @@
             <RowDefinition Height="49*"/>
         </Grid.RowDefinitions>
         <Pivot x:Name="pvtOptions" Grid.RowSpan="2" SelectionChanged="pvtOptions_SelectionChanged">
-            <PivotItem Header="Stop Selection">
-                <Grid x:Name="grdStopSel">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid x:Name="grdUserInput" Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom">
-                            <Button x:Name="btnStops1" Height="30" Width="50" Margin="20">
-                                <SymbolIcon Symbol="More"></SymbolIcon>
-                                <Button.Flyout>
-                                    <MenuFlyout x:Name="flyStops1">
-                                    </MenuFlyout>
-                                </Button.Flyout>
-                            </Button>
-                            <TextBlock x:Name="tblStop1" Text="Please Select Stop 1" Margin="20"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-                            <Button x:Name="btnStops2"  Grid.Row="1" VerticalAlignment="Top"  Height="30" Width="50" Margin="20">
-                                <SymbolIcon Symbol="More"></SymbolIcon>
-                                <Button.Flyout>
-                                    <MenuFlyout x:Name="flyStops2">
-                                    </MenuFlyout>
-                                </Button.Flyout>
-                            </Button>
-                            <TextBlock x:Name="tblStop2" Text="Please Select Stop 2" Margin="20"/>
-                        </StackPanel>
-                        <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Content="Search" Width="250" Click="btnSubmit_Click" Margin="80"/>
-                    </Grid>
-                    <Rectangle Grid.Column="0" Margin="0,0,0,10">
-                        <Rectangle.Fill>
-                            <SolidColorBrush Color="{ThemeResource SystemAccentColor}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Grid>
-            </PivotItem>
-            <PivotItem Header="Bus Times" x:Name="pvtResults" Visibility="Collapsed">
+            <PivotItem Header="Bus Times" x:Name="pvtResults">
                 <Grid x:Name="grdResults">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -77,6 +37,11 @@
                          Height="200"
                         ItemTemplate="{StaticResource myTemplate}">
                     </ListView>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Nearby">
+                <Grid>
+                    <Button x:Name="btnClick" Content="Click me" Click="Seattle_Click"/>
                 </Grid>
             </PivotItem>
             <PivotItem Header="Settings" Background="Gray">

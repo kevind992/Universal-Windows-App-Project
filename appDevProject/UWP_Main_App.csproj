@@ -96,11 +96,13 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BusStopData.cs" />
-    <Compile Include="Data.cs" />
+    <Compile Include="Class Files\BusStopData.cs" />
+    <Compile Include="Class Files\Data.cs" />
+    <Compile Include="Class Files\StopParameters.cs" />
     <Compile Include="FirstTimeUser.xaml.cs">
       <DependentUpon>FirstTimeUser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Class Files\LocationManager.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
