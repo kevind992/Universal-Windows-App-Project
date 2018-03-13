@@ -30,8 +30,6 @@ namespace UWP_Main_App
     public sealed partial class FirstTimeUser : Page
     {
 
-        private int stopTurn = 0;
-
         private string stopName1;
         private string stopName2;
 
@@ -39,6 +37,8 @@ namespace UWP_Main_App
         private string stopID2;
 
         private List<Result> galwayStops = new List<Result>();
+        ObservableCollection<string> stops = new ObservableCollection<string>();
+        private ObservableCollection<String> suggestions;
 
         //Latitude and Longitude for area around Galway City
         private double galLatLow = 53.01347187;
@@ -49,11 +49,9 @@ namespace UWP_Main_App
         public FirstTimeUser()
         {
             this.InitializeComponent();
+            suggestions = new ObservableCollection<string>();
             getBusStops();
         }
-
-       
-        ObservableCollection<string> stops = new ObservableCollection<string>();
 
         async void getBusStops()
         {
@@ -77,8 +75,10 @@ namespace UWP_Main_App
                     {
                         MenuFlyoutItem item = new MenuFlyoutItem();
                         item.Text = busData.results[i].fullname.ToString();
+                        //suggestions.Add(busData.results[i].fullname.ToString());
                         item.Click += Item_Click1;
                         flyStops1.Items.Add(item);
+                        
                         galwayStops.Add(busData.results[i]);
                     }
                 }
@@ -174,17 +174,35 @@ namespace UWP_Main_App
       
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
+            if (args.ChosenSuggestion != null)
 
+                autoListbx1.Text = args.ChosenSuggestion.ToString();
+
+            else
+
+                autoListbx1.Text = sender.Text;
         }
 
         private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-
+            autoListbx1.Text = "Choosen";
         }
 
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
 
+                suggestions.Clear();
+                suggestions.Add("1");
+                suggestions.Add("2");
+                suggestions.Add("3");
+                suggestions.Add("4");
+                suggestions.Add("5");
+                suggestions.Add("6");
+                suggestions.Add("7");
+                sender.ItemsSource = suggestions;
+            }
         }
     }
 }

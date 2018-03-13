@@ -5,13 +5,14 @@
     xmlns:local="using:appDevProject"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="myTemplate">
             <StackPanel Orientation="Horizontal" Margin="2,1,2,1">
                 <StackPanel Margin="1,0,1,0" Orientation="Horizontal">
                     <TextBlock Text="{Binding Path= route}" Style="{StaticResource TitleTextBlockStyle}"/>
-                    <TextBlock Text="{Binding Path= departureduetime}" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Text="{Binding Path= departureduetime}" Style="{StaticResource TitleTextBlockStyle}"/>
                     <TextBlock Text="min" Style="{StaticResource SubtitleTextBlockStyle}"/>
                 </StackPanel>
             </StackPanel>
@@ -41,7 +42,11 @@
             </PivotItem>
             <PivotItem Header="Nearby">
                 <Grid>
-                    <Button x:Name="btnClick" Content="Click me" Click="Seattle_Click"/>
+                    <Maps:MapControl  
+                        x:Name="MapControl1"  
+                        MapServiceToken="OC53XbqKBuW48DF6NXBZ~jCnzcwpDjp570OYrdQ1keQ~AupTxaqXEeWqZhcrap4T0Ie5cq_vWUuA9J-pVi5UrLSbUuNu1FVztRcFvTgrry62"  
+                        ZoomLevel="8" />
+ 
                 </Grid>
             </PivotItem>
             <PivotItem Header="Settings" Background="Gray">

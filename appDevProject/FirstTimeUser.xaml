@@ -39,7 +39,7 @@
                     <TextBlock x:Name="tblStop2" Text="Please Select Stop 2" Margin="20"/>
 
                 </StackPanel>
-                <AutoSuggestBox PlaceholderText="Search" QueryIcon="Find" Width="200"
+                <AutoSuggestBox x:Name="autoListbx1" PlaceholderText="Search" QueryIcon="Find" Width="200"
                     TextChanged="AutoSuggestBox_TextChanged"
                     QuerySubmitted="AutoSuggestBox_QuerySubmitted"  SuggestionChosen="AutoSuggestBox_SuggestionChosen"/>
                 <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Content="Search" Width="250" Click="btnSubmit_Click" Margin="80"/>
