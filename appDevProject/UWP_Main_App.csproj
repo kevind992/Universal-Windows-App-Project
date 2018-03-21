@@ -98,7 +98,6 @@
     </Compile>
     <Compile Include="Class Files\BusStopData.cs" />
     <Compile Include="Class Files\Data.cs" />
-    <Compile Include="Class Files\StopParameters.cs" />
     <Compile Include="FirstTimeUser.xaml.cs">
       <DependentUpon>FirstTimeUser.xaml</DependentUpon>
     </Compile>

@@ -7,11 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
-using UWP_Main_App.Class_Files;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Notifications;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -35,6 +35,9 @@ namespace UWP_Main_App
 
         private string stopID1;
         private string stopID2;
+
+        private bool stop1Sel = false;
+        private bool stop2Sel = false;
 
         private List<Result> galwayStops = new List<Result>();
         ObservableCollection<string> stops = new ObservableCollection<string>();
@@ -103,6 +106,8 @@ namespace UWP_Main_App
             tblStop1.Text = click.Text;
             stopName1 = click.Text;
             System.Diagnostics.Debug.WriteLine(stopName1);
+            stop1Sel = true;
+            System.Diagnostics.Debug.WriteLine("Stop 1 is: " + stop1Sel);
         }
 
         private void Item_Click2(object sender, RoutedEventArgs e)
@@ -111,16 +116,24 @@ namespace UWP_Main_App
             stopName2 = click.Text;
             tblStop2.Text = click.Text;
             System.Diagnostics.Debug.WriteLine(stopName2);
+            stop2Sel = true;
+            System.Diagnostics.Debug.WriteLine("Stop 2 is: " + stop2Sel);
         }
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private async void btnSubmit_ClickAsync(object sender, RoutedEventArgs e)
         {
-            try
+            
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+            if(stop1Sel == false ||  stop2Sel == false)
             {
-                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-                var parameters = new StopParameters();
-
+                MessageDialog message = new MessageDialog("Two Bus-stop need to be selected before continuing..");
+                await message.ShowAsync();
+                System.Diagnostics.Debug.WriteLine("Not passed if statement..");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Passed if statement..");
                 stopID1 = searchID(stopName1);
                 stopID2 = searchID(stopName2);
 
@@ -136,8 +149,6 @@ namespace UWP_Main_App
 
                 Frame.Navigate(typeof(MainPage));
             }
-            catch
-            { }
         }
         private void tileNotification(string id, string name)
         {

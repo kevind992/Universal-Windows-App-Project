@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
-using UWP_Main_App.Class_Files;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
@@ -29,12 +28,11 @@ namespace appDevProject
         private string stopName2;
         private string stopID1;
         private string stopID2;
-        private int stopTurn=0;
+        private bool stopTurn = true;
 
         public MainPage()
         {
             this.InitializeComponent();
-            
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -42,19 +40,15 @@ namespace appDevProject
             base.OnNavigatedTo(e);
 
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
             
             stopID1 = (string)localSettings.Values["stopID1"];
             stopID2 = (string)localSettings.Values["stopID2"];
             stopName1 = (string)localSettings.Values["stopName1"];
             stopName2 = (string)localSettings.Values["stopName2"];
 
-            
-
             getSearchResults(stopID1);
             getSearchResults(stopID2);
         }
-
 
         async void getSearchResults(string stop)
         {
@@ -66,17 +60,17 @@ namespace appDevProject
 
             var data = JsonConvert.DeserializeObject<Rootobject2>(response);
 
-            if (stopTurn == 0)
+            if (stopTurn == false)
             {
                 tbxStopName1.Text = stopName1;
                 lvListBuses1.ItemsSource = data.results;
-                stopTurn = 1;
+                stopTurn = true;
             }
             else
             {
                 tbxStopName2.Text = stopName2;
                 lvListBuses2.ItemsSource = data.results;
-                stopTurn = 0;
+                stopTurn = false;
             }
         }
 
@@ -97,18 +91,20 @@ namespace appDevProject
 
             spaceNeedlePlace.Show(rectangle, Windows.UI.Popups.Placement.Below);
         }
-        private void showResults()
+     
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            lvListBuses1.Visibility = Visibility.Visible;
-            lvListBuses2.Visibility = Visibility.Visible;
-        }
-        private void pvtOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ApplicationDataContainer localSettings =
-                ApplicationData.Current.LocalSettings;
+            System.Diagnostics.Debug.WriteLine("Refresh Selected..");
 
-            localSettings.Values["currentOption"] = pvtOptions.SelectedIndex;
-        }
+            lvListBuses1.ItemsSource = null;
+            lvListBuses1.Items.Clear();
+            lvListBuses2.ItemsSource = null;
+            lvListBuses2.Items.Clear();
 
+            stopTurn = true;
+
+            getSearchResults(stopID1);
+            getSearchResults(stopID2);
+        }
     }
 }

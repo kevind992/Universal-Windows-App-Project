@@ -21,7 +21,7 @@
                         <TextBlock HorizontalAlignment="Left" Text="{Binding Path= destination}" Grid.Column="1" Style="{StaticResource BaseTextBlockStyle}"/>
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                             <TextBlock HorizontalAlignment="Left" Text="{Binding Path= departureduetime}" Style="{StaticResource BaseTextBlockStyle}"/>
-                            <TextBlock Text="min"  Style="{StaticResource SubtitleTextBlockStyle}"/>
+                            <TextBlock Text="min"  Style="{StaticResource BaseTextBlockStyle}"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -33,14 +33,18 @@
             <RowDefinition/>
             <RowDefinition Height="49*"/>
         </Grid.RowDefinitions>
-        <Pivot x:Name="pvtOptions" Grid.RowSpan="2" SelectionChanged="pvtOptions_SelectionChanged">
+        <Pivot x:Name="pvtOptions" Grid.RowSpan="2">
             <PivotItem Header="Bus Times" x:Name="pvtResults">
                 <Grid x:Name="grdResults">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock x:Name="tbxStopName1" Grid.Row="0" Text="Stop 1"/>
+                    
+                    <TextBlock x:Name="tbxStopName1" Text="Stop 1" Grid.Row="0"/>
+                    <Button x:Name="btnRefresh"  VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnRefresh_Click" Grid.Row="0">
+                        <SymbolIcon Symbol="Refresh"/>
+                    </Button>
                     <ListView x:Name="lvListBuses1" Margin="10,50, 0, 0"  Grid.Row="0"
                          Height="200"
                         ItemTemplate="{StaticResource myTemplate}">
