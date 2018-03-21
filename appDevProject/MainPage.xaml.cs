@@ -41,12 +41,15 @@ namespace appDevProject
         {
             base.OnNavigatedTo(e);
 
-            var parameters = (StopParameters)e.Parameter;
-            stopName1 = parameters.StopName1;
-            stopName2 = parameters.StopName2;
-            stopID1 = parameters.StopID1;
-            stopID2 = parameters.StopID2;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
+            
+            stopID1 = (string)localSettings.Values["stopID1"];
+            stopID2 = (string)localSettings.Values["stopID2"];
+            stopName1 = (string)localSettings.Values["stopName1"];
+            stopName2 = (string)localSettings.Values["stopName2"];
+
+            
 
             getSearchResults(stopID1);
             getSearchResults(stopID2);
@@ -65,11 +68,13 @@ namespace appDevProject
 
             if (stopTurn == 0)
             {
+                tbxStopName1.Text = stopName1;
                 lvListBuses1.ItemsSource = data.results;
                 stopTurn = 1;
             }
             else
             {
+                tbxStopName2.Text = stopName2;
                 lvListBuses2.ItemsSource = data.results;
                 stopTurn = 0;
             }

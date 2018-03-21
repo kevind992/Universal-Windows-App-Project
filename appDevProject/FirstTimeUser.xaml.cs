@@ -49,6 +49,7 @@ namespace UWP_Main_App
         public FirstTimeUser()
         {
             this.InitializeComponent();
+            
             suggestions = new ObservableCollection<string>();
             getBusStops();
         }
@@ -116,29 +117,24 @@ namespace UWP_Main_App
         {
             try
             {
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
                 var parameters = new StopParameters();
 
                 stopID1 = searchID(stopName1);
                 stopID2 = searchID(stopName2);
 
-                parameters.StopName1 = stopName1;
-                parameters.StopName2 = stopName2;
-                parameters.StopID1 = stopID1;
-                parameters.StopID2 = stopID2;
-
-
                 System.Diagnostics.Debug.WriteLine(stopID1);
                 System.Diagnostics.Debug.WriteLine(stopID2);
 
-                //getSearchResults(stopID1);
-                // getSearchResults(stopID2);
-
-                Frame.Navigate(typeof(MainPage), parameters);
+                localSettings.Values["stopID1"] = stopID1;
+                localSettings.Values["stopID2"] = stopID2;
+                localSettings.Values["stopName1"] = stopName1;
+                localSettings.Values["stopName2"] = stopName2;
 
                 tileNotification(stopID1, stopName1);
 
-                //hideOptions();
-               
+                Frame.Navigate(typeof(MainPage));
             }
             catch
             { }
@@ -203,6 +199,25 @@ namespace UWP_Main_App
                 suggestions.Add("7");
                 sender.ItemsSource = suggestions;
             }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+            if (localSettings.Values["IsFirstTime"] == null)
+            {
+                localSettings.Values["IsFirstTime"] = true;
+            }
+
+            if ((bool)localSettings.Values["IsFirstTime"])
+            {
+                localSettings.Values["IsFirstTime"] = false;
+                this.Frame.Navigate(typeof(MainPage));
+            }
+
         }
     }
 }

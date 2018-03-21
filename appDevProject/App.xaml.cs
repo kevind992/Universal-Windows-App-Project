@@ -8,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -40,6 +41,8 @@ namespace appDevProject
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+
+           
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -62,16 +65,37 @@ namespace appDevProject
 
             if (e.PrelaunchActivated == false)
             {
-                if (rootFrame.Content == null)
+                
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+                object value = localSettings.Values["IsFirstTime"];
+
+                if (localSettings.Values["IsFirstTime"] != null)
                 {
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // parameter
+                    if ((bool)value)
+                    {
+                        localSettings.Values["IsFirstTime"] = false;
+                        rootFrame.Navigate(typeof(FirstTimeUser), e.Arguments);   
+                    }
+                    else
+                    {
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    }
+                }
+                else
+                {
+                    localSettings.Values["IsFirstTime"] = false;
                     rootFrame.Navigate(typeof(FirstTimeUser), e.Arguments);
                 }
+                // When the navigation stack isn't restored navigate to the first page,
+                // configuring the new page by passing required information as a navigation
+                // parameter
+                    
+                
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+            
         }
 
         /// <summary>
