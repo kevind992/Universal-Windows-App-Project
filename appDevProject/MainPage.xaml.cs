@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
+using UWP_Main_App;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
@@ -11,6 +12,7 @@ using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -48,9 +50,12 @@ namespace appDevProject
 
             getSearchResults(stopID1);
             getSearchResults(stopID2);
+
+            var MyLandmarks = new List<MapElement>();
+
         }
 
-        async void getSearchResults(string stop)
+    async void getSearchResults(string stop)
         {
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stop + "&format=json";
 
