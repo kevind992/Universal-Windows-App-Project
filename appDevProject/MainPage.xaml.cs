@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.Services.Maps;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -149,10 +150,10 @@ namespace appDevProject
             loaded = true;
             System.Diagnostics.Debug.WriteLine("Finished Loading bus stops for locations..");
 
-            setIcons();
+            await setIconsAsync();
         }
 
-        private void setIcons()
+        private async Task setIconsAsync()
         {
             for (int i = 0; i < galwayStops.Count; i++)
             {
@@ -168,22 +169,74 @@ namespace appDevProject
             }
             System.Diagnostics.Debug.WriteLine("Bus Stop points added..");
 
-            
-
+            await getUserLocationAsync();
 
         }
-        private async static Task<Geoposition> SetUserLocationAsync()
+        
+        private async Task getUserLocationAsync()
         {
-            var accessStatus = await Geolocator.RequestAccessAsync();
+            var access = await Geolocator.RequestAccessAsync();
 
-            if (accessStatus != GeolocationAccessStatus.Allowed) throw new Exception();
+            switch (access)
+            {
+                case GeolocationAccessStatus.Allowed:
 
-            var geolocator = new Geolocator { DesiredAccuracyInMeters = 0 };
+                    Geolocator geolocator = new Geolocator { DesiredAccuracyInMeters = 0 };
+                    geolocator.StatusChanged += Geolocator_StatusChanged;
+                    Geoposition pos = await geolocator.GetGeopositionAsync();
 
-            var userPosition = await geolocator.GetGeopositionAsync();
+                    BasicGeoposition snPosition = new BasicGeoposition();
+                    snPosition.Latitude = (float)pos.Coordinate.Point.Position.Latitude;
+                    snPosition.Longitude = (float)pos.Coordinate.Point.Position.Longitude;
 
-            return  userPosition;
+                    MapIcon mapIcon = new MapIcon();
 
+                    mapIcon.Location = new Geopoint(snPosition);
+                    mapIcon.Title = "Your Position";
+                    MapControl1.MapElements.Add(mapIcon);
+                    break;
+
+                case GeolocationAccessStatus.Denied:
+
+                    break;
+            }
+        }
+
+        async private void Geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                switch (e.Status)
+                {
+                    case PositionStatus.Ready:
+                        //If its ready to get location data,you can add some code.  
+                        break;
+
+                    case PositionStatus.Initializing:
+                        //Location is being initialized.waiting for it to complete.  
+                        break;
+
+                    case PositionStatus.NoData:
+                        //Some places can not access location.Metros,Mountains,Elevators or fields with jammers.This case works when you're in one of them.  
+                        break;
+
+                    case PositionStatus.Disabled:
+                        //You either rejected location access at start or closed Location.  
+                        break;
+
+                    case PositionStatus.NotInitialized:
+                        //The app has not yet accessed location data.  
+                        break;
+
+                    case PositionStatus.NotAvailable:
+                        //Location may not be possible due to OS settings.  
+                        break;
+
+                    default:
+                        //If non of above works,this will.Writing a message helps.  
+                        break;
+                }
+            });
         }
     }
 }
