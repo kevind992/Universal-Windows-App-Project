@@ -43,8 +43,9 @@ namespace UWP_Main_App
             getBusStops();
 
             var MyLandmarks = new List<MapElement>();
-
-            for (int i = 0; i > galwayStops.Count; i++)
+            System.Diagnostics.Debug.WriteLine("Before for loop..");
+            
+            for (int i = 0; i > 200; i++)
             {
                 BasicGeoposition snPosition = new BasicGeoposition { Latitude = galwayStops[i].latitude, Longitude = galwayStops[i].longitude };
                 Geopoint snPoint = new Geopoint(snPosition);
@@ -58,22 +59,36 @@ namespace UWP_Main_App
                     
                 };
                 count++;
-
+                System.Diagnostics.Debug.WriteLine("Added icon..");
                 MyLandmarks.Add(spaceNeedleIcon);
             }
 
-            var LandmarksLayer = new MapElementsLayer
-            {
-                ZIndex = 1,
-                MapElements = MyLandmarks
-            };
+            //var LandmarksLayer = new MapElementsLayer
+            //{
+            //    ZIndex = 1,
+            //    MapElements = MyLandmarks
+            //};
 
-
+            System.Diagnostics.Debug.WriteLine("Return Statment..");
             return MyLandmarks;
 
         }
 
-        async void getBusStops()
+       private void setMap()
+        {
+            BasicGeoposition cityPosition = new BasicGeoposition() {
+                Latitude = 53.281551,
+                Longitude = -9.035187
+            };
+
+            Geopoint cityCentre = new Geopoint(cityPosition);
+
+            MapControl1.Center = cityCentre;
+            MapControl1.LandmarksVisible = true;
+            MapControl1.ZoomLevel = 12;
+        }
+
+        private async void getBusStops()
         {
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&operator=BE&format=json%22";
 
@@ -82,6 +97,7 @@ namespace UWP_Main_App
             string response2 = await client.GetStringAsync(url);
 
             var busData = JsonConvert.DeserializeObject<Rootobject>(response2);
+            
 
             for (int i = 1; i < busData.numberofresults; i++)
             {
@@ -90,10 +106,26 @@ namespace UWP_Main_App
                     if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
                     {
                         galwayStops.Add(busData.results[i]);
+                        
                     }
                 }
             }
+            loaded = true;
+            System.Diagnostics.Debug.WriteLine("Finished Loading bus stops for locations..");
 
+            for (int i = 0; i < galwayStops.Count; i++)
+            {
+                BasicGeoposition snPosition = new BasicGeoposition();
+                snPosition.Latitude = galwayStops[i].latitude;
+                snPosition.Longitude = galwayStops[i].longitude;
+
+                MapIcon mapIcon = new MapIcon();
+
+                mapIcon.Location = new Geopoint(snPosition);
+                mapIcon.Title = galwayStops[i].shortname;
+                MapControl1.MapElements.Add(mapIcon);
+            }
+            System.Diagnostics.Debug.WriteLine("Bus Stop points added..");
         }
     }
 }

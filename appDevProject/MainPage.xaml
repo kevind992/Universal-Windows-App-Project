@@ -59,10 +59,8 @@
             <PivotItem Header="Nearby">
                 <Grid>
                     <Maps:MapControl  
-                        x:Name="MapControl1"  
-                        MapServiceToken="OC53XbqKBuW48DF6NXBZ~jCnzcwpDjp570OYrdQ1keQ~AupTxaqXEeWqZhcrap4T0Ie5cq_vWUuA9J-pVi5UrLSbUuNu1FVztRcFvTgrry62"  
-                        ZoomLevel="8" />
- 
+                        x:Name="MapControl1"
+                        MapServiceToken="OC53XbqKBuW48DF6NXBZ~jCnzcwpDjp570OYrdQ1keQ~AupTxaqXEeWqZhcrap4T0Ie5cq_vWUuA9J-pVi5UrLSbUuNu1FVztRcFvTgrry62"  />
                 </Grid>
             </PivotItem>
             <PivotItem Header="Settings" Background="Gray">

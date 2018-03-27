@@ -4,11 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
+using System.Threading.Tasks;
 using UWP_Main_App;
+using UWP_Main_App.Class_Files;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,15 +29,27 @@ namespace appDevProject
     public sealed partial class MainPage : Page
     {
 
+        private double galLatLow = 53.01347187;
+        private double galLatHigh = 53.54880427;
+        private double galLongLeft = -9.58028032;
+        private double galLongRight = -8.4061165;
+
         private string stopName1;
         private string stopName2;
         private string stopID1;
         private string stopID2;
         private bool stopTurn = true;
+        private bool loaded = false;
+
+        private List<Result> galwayStops = new List<Result>();
+
+        public object MapIcon1 { get; private set; }
 
         public MainPage()
         {
             this.InitializeComponent();
+           
+           
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -42,7 +57,7 @@ namespace appDevProject
             base.OnNavigatedTo(e);
 
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            
+
             stopID1 = (string)localSettings.Values["stopID1"];
             stopID2 = (string)localSettings.Values["stopID2"];
             stopName1 = (string)localSettings.Values["stopName1"];
@@ -51,11 +66,12 @@ namespace appDevProject
             getSearchResults(stopID1);
             getSearchResults(stopID2);
 
-            var MyLandmarks = new List<MapElement>();
+            getBusStops();
 
+            setMap();
         }
 
-    async void getSearchResults(string stop)
+        async void getSearchResults(string stop)
         {
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stop + "&format=json";
 
@@ -79,24 +95,6 @@ namespace appDevProject
             }
         }
 
-        private void Seattle_Click(object sender, RoutedEventArgs e)
-        {
-            Geopoint seattlePoint = new Geopoint
-                (new BasicGeoposition { Latitude = 47.6062, Longitude = -122.3321 });
-
-            PlaceInfo spaceNeedlePlace = PlaceInfo.Create(seattlePoint);
-
-            FrameworkElement targetElement = (FrameworkElement)sender;
-
-            GeneralTransform generalTransform =
-                targetElement.TransformToVisual((FrameworkElement)targetElement.Parent);
-
-            Rect rectangle = generalTransform.TransformBounds(new Rect(new Point
-                (targetElement.Margin.Left, targetElement.Margin.Top), targetElement.RenderSize));
-
-            spaceNeedlePlace.Show(rectangle, Windows.UI.Popups.Placement.Below);
-        }
-     
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("Refresh Selected..");
@@ -110,6 +108,82 @@ namespace appDevProject
 
             getSearchResults(stopID1);
             getSearchResults(stopID2);
+        }
+
+        private void setMap()
+        {
+            BasicGeoposition cityPosition = new BasicGeoposition() {
+                Latitude = 53.281551,
+                Longitude = -9.035187
+            };
+
+            Geopoint cityCentre = new Geopoint(cityPosition);
+
+            MapControl1.Center = cityCentre;
+            MapControl1.LandmarksVisible = true;
+            MapControl1.ZoomLevel = 12;
+        }
+
+        private async void getBusStops()
+        {
+            string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&operator=BE&format=json%22";
+
+            HttpClient client = new HttpClient();
+
+            string response2 = await client.GetStringAsync(url);
+
+            var busData = JsonConvert.DeserializeObject<Rootobject>(response2);
+            
+
+            for (int i = 1; i < busData.numberofresults; i++)
+            {
+                if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
+                {
+                    if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
+                    {
+                        galwayStops.Add(busData.results[i]);
+                        
+                    }
+                }
+            }
+            loaded = true;
+            System.Diagnostics.Debug.WriteLine("Finished Loading bus stops for locations..");
+
+            setIcons();
+        }
+
+        private void setIcons()
+        {
+            for (int i = 0; i < galwayStops.Count; i++)
+            {
+                BasicGeoposition snPosition = new BasicGeoposition();
+                snPosition.Latitude = galwayStops[i].latitude;
+                snPosition.Longitude = galwayStops[i].longitude;
+
+                MapIcon mapIcon = new MapIcon();
+
+                mapIcon.Location = new Geopoint(snPosition);
+                mapIcon.Title = galwayStops[i].shortname;
+                MapControl1.MapElements.Add(mapIcon);
+            }
+            System.Diagnostics.Debug.WriteLine("Bus Stop points added..");
+
+            
+
+
+        }
+        private async static Task<Geoposition> SetUserLocationAsync()
+        {
+            var accessStatus = await Geolocator.RequestAccessAsync();
+
+            if (accessStatus != GeolocationAccessStatus.Allowed) throw new Exception();
+
+            var geolocator = new Geolocator { DesiredAccuracyInMeters = 0 };
+
+            var userPosition = await geolocator.GetGeopositionAsync();
+
+            return  userPosition;
+
         }
     }
 }

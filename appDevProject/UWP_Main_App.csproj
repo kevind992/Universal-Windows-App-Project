@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="Class Files\BusStopData.cs" />
     <Compile Include="Class Files\Data.cs" />
+    <Compile Include="Class Files\Pushpin.cs" />
     <Compile Include="FirstTimeUser.xaml.cs">
       <DependentUpon>FirstTimeUser.xaml</DependentUpon>
     </Compile>
@@ -146,6 +147,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="System\Threading\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
