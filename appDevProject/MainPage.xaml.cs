@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UWP_Main_App;
-using UWP_Main_App.Class_Files;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
@@ -40,7 +39,6 @@ namespace appDevProject
         private string stopID1;
         private string stopID2;
         private bool stopTurn = true;
-        private bool loaded = false;
 
         private List<Result> galwayStops = new List<Result>();
 
@@ -49,8 +47,6 @@ namespace appDevProject
         public MainPage()
         {
             this.InitializeComponent();
-           
-           
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -64,12 +60,21 @@ namespace appDevProject
             stopName1 = (string)localSettings.Values["stopName1"];
             stopName2 = (string)localSettings.Values["stopName2"];
 
-            getSearchResults(stopID1);
-            getSearchResults(stopID2);
+            if(string.IsNullOrEmpty(stopID1) || string.IsNullOrEmpty(stopID2))
+            {
+                System.Diagnostics.Debug.WriteLine("Is empty..");
+                localSettings.Values["IsFirstTime"] = true;
+                this.Frame.Navigate(typeof(FirstTimeUser));
+            }
+            else
+            {
+                getSearchResults(stopID1);
+                getSearchResults(stopID2);
 
-            getBusStops();
+                getBusStops();
 
-            setMap();
+                setMap();
+            }
         }
 
         async void getSearchResults(string stop)
@@ -147,7 +152,7 @@ namespace appDevProject
                     }
                 }
             }
-            loaded = true;
+            
             System.Diagnostics.Debug.WriteLine("Finished Loading bus stops for locations..");
 
             await setIconsAsync();
