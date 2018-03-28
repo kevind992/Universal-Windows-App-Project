@@ -160,6 +160,10 @@ namespace appDevProject
 
         private async Task setIconsAsync()
         {
+
+            RandomAccessStreamReference mapBillboardStreamReference =
+                RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/BusStopLogo.png"));
+
             for (int i = 0; i < galwayStops.Count; i++)
             {
                 BasicGeoposition snPosition = new BasicGeoposition();
@@ -170,6 +174,7 @@ namespace appDevProject
 
                 mapIcon.Location = new Geopoint(snPosition);
                 mapIcon.Title = galwayStops[i].shortname;
+                mapIcon.Image = mapBillboardStreamReference;
                 MapControl1.MapElements.Add(mapIcon);
             }
             System.Diagnostics.Debug.WriteLine("Bus Stop points added..");
@@ -181,6 +186,9 @@ namespace appDevProject
         private async Task getUserLocationAsync()
         {
             var access = await Geolocator.RequestAccessAsync();
+
+            RandomAccessStreamReference mapBillboardStreamReference =
+                RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/UserLocation.png"));
 
             switch (access)
             {
@@ -198,6 +206,7 @@ namespace appDevProject
 
                     mapIcon.Location = new Geopoint(snPosition);
                     mapIcon.Title = "Your Position";
+                    mapIcon.Image = mapBillboardStreamReference;
                     MapControl1.MapElements.Add(mapIcon);
                     break;
 

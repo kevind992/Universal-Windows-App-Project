@@ -18,8 +18,8 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom">
-                    <Button x:Name="btnStops1" Height="30" Width="50" Margin="20">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom">
+                    <Button x:Name="btnStops1" Height="30" Width="100" Margin="20" HorizontalAlignment="Center">
                         <SymbolIcon Symbol="More"></SymbolIcon>
                         <Button.Flyout>
                             <MenuFlyout x:Name="flyStops1">
@@ -28,27 +28,28 @@
                     </Button>
                     <TextBlock x:Name="tblStop1" Text="Please Select Stop 1" Margin="20"/>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Button x:Name="btnStops2"  Grid.Row="1" VerticalAlignment="Top"  Height="30" Width="50" Margin="20">
+                <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <Button x:Name="btnStops2"  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top"  Height="30" Width="100" Margin="20">
                         <SymbolIcon Symbol="More"></SymbolIcon>
                         <Button.Flyout>
                             <MenuFlyout x:Name="flyStops2">
                             </MenuFlyout>
                         </Button.Flyout>
                     </Button>
-                    <TextBlock x:Name="tblStop2" Text="Please Select Stop 2" Margin="20"/>
+                    <TextBlock x:Name="tblStop2" Text="Please Select Stop 2" Margin="20" HorizontalAlignment="Center"/>
+                    <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Content="Search" Width="250" Click="btnSubmit_ClickAsync" Margin="80"/>
 
                 </StackPanel>
                 <AutoSuggestBox x:Name="autoListbx1" PlaceholderText="Search" QueryIcon="Find" Width="200"
                     TextChanged="AutoSuggestBox_TextChanged"
                     QuerySubmitted="AutoSuggestBox_QuerySubmitted"  SuggestionChosen="AutoSuggestBox_SuggestionChosen"/>
-                <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Content="Search" Width="250" Click="btnSubmit_Click" Margin="80"/>
             </Grid>
             <Rectangle Grid.Column="0" Margin="0,0,0,10">
                 <Rectangle.Fill>
                     <SolidColorBrush Color="{ThemeResource SystemAccentColor}" />
                 </Rectangle.Fill>
             </Rectangle>
+            <Image x:Name="imgLogo" Source="Assets/Square310x310Logo.png" />
         </Grid>
     </Grid>
 </Page>
