@@ -63,8 +63,38 @@
                         MapServiceToken="OC53XbqKBuW48DF6NXBZ~jCnzcwpDjp570OYrdQ1keQ~AupTxaqXEeWqZhcrap4T0Ie5cq_vWUuA9J-pVi5UrLSbUuNu1FVztRcFvTgrry62"  />
                 </Grid>
             </PivotItem>
-            <PivotItem Header="Settings" Background="Gray">
-
+            <PivotItem Header="Settings">
+                <Grid x:Name="grdSettings">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Vertical" Margin="10,10,0,0">
+                        <TextBlock Text="Stop 1" Margin="40,0,0,0"/>
+                        <StackPanel Grid.Row="0" Margin="20,0,0,0" Orientation="Horizontal">
+                            <Button x:Name="btnStopsChange1" Height="30" Width="100" Margin="20">
+                                <SymbolIcon Symbol="More"></SymbolIcon>
+                                <Button.Flyout>
+                                    <MenuFlyout x:Name="flyStopsChange1">
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                            </Button>
+                            <TextBlock x:Name="tblStopChange1"/>
+                        </StackPanel>
+                        <TextBlock Text="Stop 2" Margin="40,0,0,0"/>
+                        <StackPanel Grid.Row="0" Margin="20,0,0,0" Orientation="Horizontal">
+                            <Button x:Name="btnStopsChange2" Height="30" Width="100" Margin="20">
+                                <SymbolIcon Symbol="More"></SymbolIcon>
+                                <Button.Flyout>
+                                    <MenuFlyout x:Name="flyStopsChange2">
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                            </Button>
+                            <TextBlock x:Name="tblStopChange2"/>
+                        </StackPanel>
+                        <ToggleSwitch Header="Location" OffContent="Lcation Off" OnContent="Location On" IsOn="True" Margin="50,0,0,0"/>
+                    </StackPanel>
+                </Grid>
             </PivotItem>
         </Pivot>
     </Grid>
