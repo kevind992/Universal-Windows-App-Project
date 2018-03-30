@@ -350,9 +350,8 @@ namespace appDevProject
             return id;
         }
 
-        private async Task ToggleSwitch_ToggledAsync(object sender, RoutedEventArgs e)
+        private async void togLocation_ToggledAsync(object sender, RoutedEventArgs e)
         {
-
             var access = await Geolocator.RequestAccessAsync();
 
             if (togLocation.IsOn == true)
@@ -362,6 +361,7 @@ namespace appDevProject
             else
             {
                 access = GeolocationAccessStatus.Denied;
+
             }
         }
     }

@@ -28,7 +28,7 @@
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
-    <Grid x:Name="grdMain" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="grdMain" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Light">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="49*"/>
@@ -92,7 +92,7 @@
                             </Button>
                             <TextBlock x:Name="tblStopChange2" Margin="0,25,0,0" Text="Stop 2 name"/>
                         </StackPanel>
-                        <ToggleSwitch x:Name="togLocation" Header="Location" OffContent="Location Off" OnContent="Location On" IsOn="True" Margin="40,0,0,0" Toggled="ToggleSwitch_Toggled"/>
+                        <ToggleSwitch x:Name="togLocation" Header="Location" OffContent="Location Off" OnContent="Location On" IsOn="True" Margin="40,0,0,0" Toggled="togLocation_ToggledAsync"/>
                     </StackPanel>
                 </Grid>
             </PivotItem>
