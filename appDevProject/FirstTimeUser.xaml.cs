@@ -59,45 +59,55 @@ namespace UWP_Main_App
 
         async void getBusStops()
         {
-            string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&operator=BE&format=json%22";
 
-            HttpClient client = new HttpClient();
-
-            string response2 = await client.GetStringAsync(url);
-
-            var busData = JsonConvert.DeserializeObject<Rootobject>(response2);
-
-
-            System.Diagnostics.Debug.WriteLine("Inside If..");
-            System.Diagnostics.Debug.WriteLine("Loading Data..");
-
-            for (int i = 1; i < busData.numberofresults; i++)
+            try
             {
-                if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
+                string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&operator=BE&format=json%22";
+
+                HttpClient client = new HttpClient();
+
+                string response2 = await client.GetStringAsync(url);
+
+                var busData = JsonConvert.DeserializeObject<Rootobject>(response2);
+
+
+                System.Diagnostics.Debug.WriteLine("Inside If..");
+                System.Diagnostics.Debug.WriteLine("Loading Data..");
+
+                for (int i = 1; i < busData.numberofresults; i++)
                 {
-                    if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
+                    if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
                     {
-                        MenuFlyoutItem item = new MenuFlyoutItem();
-                        item.Text = busData.results[i].fullname.ToString();
-                        //suggestions.Add(busData.results[i].fullname.ToString());
-                        item.Click += Item_Click1;
-                        flyStops1.Items.Add(item);
-                        
-                        galwayStops.Add(busData.results[i]);
+                        if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
+                        {
+                            MenuFlyoutItem item = new MenuFlyoutItem();
+                            item.Text = busData.results[i].fullname.ToString();
+                            //suggestions.Add(busData.results[i].fullname.ToString());
+                            item.Click += Item_Click1;
+                            flyStops1.Items.Add(item);
+
+                            galwayStops.Add(busData.results[i]);
+                        }
+                    }
+                    if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
+                    {
+                        if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
+                        {
+                            MenuFlyoutItem item = new MenuFlyoutItem();
+                            item.Text = busData.results[i].fullname.ToString();
+                            item.Click += Item_Click2;
+                            flyStops2.Items.Add(item);
+                        }
                     }
                 }
-                if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
-                {
-                    if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
-                    {
-                        MenuFlyoutItem item = new MenuFlyoutItem();
-                        item.Text = busData.results[i].fullname.ToString();
-                        item.Click += Item_Click2;
-                        flyStops2.Items.Add(item);
-                    }
-                }
+                System.Diagnostics.Debug.WriteLine("Data Loaded..");
             }
-            System.Diagnostics.Debug.WriteLine("Data Loaded..");
+            catch
+            {
+                MessageDialog message = new MessageDialog("You have no data..");
+                await message.ShowAsync();
+            }
+           
         }
 
         private void Item_Click1(object sender, RoutedEventArgs e)
@@ -145,25 +155,10 @@ namespace UWP_Main_App
                 localSettings.Values["stopName1"] = stopName1;
                 localSettings.Values["stopName2"] = stopName2;
 
-                tileNotification(stopID1, stopName1);
-
                 Frame.Navigate(typeof(MainPage));
             }
         }
-        private void tileNotification(string id, string name)
-        {
-
-            var uri = String.Format("http://busstopservice20180218022023.azurewebsites.net/?stopID={0}&stopName={1}", id, name);
-
-            var tileContent = new Uri(uri);
-
-            var requestedInterval = PeriodicUpdateRecurrence.HalfHour;
-
-            var updater = TileUpdateManager.CreateTileUpdaterForApplication();
-            updater.StartPeriodicUpdate(tileContent, requestedInterval);
-
-        }
-
+        
 
         private string searchID(string s)
         {
@@ -179,39 +174,6 @@ namespace UWP_Main_App
             return id;
         }
       
-        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            if (args.ChosenSuggestion != null)
-
-                autoListbx1.Text = args.ChosenSuggestion.ToString();
-
-            else
-
-                autoListbx1.Text = sender.Text;
-        }
-
-        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            autoListbx1.Text = "Choosen";
-        }
-
-        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-            {
-
-                suggestions.Clear();
-                suggestions.Add("1");
-                suggestions.Add("2");
-                suggestions.Add("3");
-                suggestions.Add("4");
-                suggestions.Add("5");
-                suggestions.Add("6");
-                suggestions.Add("7");
-                sender.ItemsSource = suggestions;
-            }
-        }
-
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);

@@ -13,6 +13,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Notifications;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
@@ -79,26 +80,35 @@ namespace appDevProject
 
         async void getSearchResults(string stop)
         {
-            string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stop + "&format=json";
-
-            HttpClient client = new HttpClient();
-
-            string response = await client.GetStringAsync(url);
-
-            var data = JsonConvert.DeserializeObject<Rootobject2>(response);
-
-            if (stopTurn == false)
+            try
             {
-                tbxStopName1.Text = stopName1;
-                lvListBuses1.ItemsSource = data.results;
-                stopTurn = true;
+                string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stop + "&format=json";
+
+                HttpClient client = new HttpClient();
+
+                string response = await client.GetStringAsync(url);
+
+                var data = JsonConvert.DeserializeObject<Rootobject2>(response);
+
+                if (stopTurn == false)
+                {
+                    tbxStopName1.Text = stopName1;
+                    lvListBuses1.ItemsSource = data.results;
+                    stopTurn = true;
+                }
+                else
+                {
+                    tbxStopName2.Text = stopName2;
+                    lvListBuses2.ItemsSource = data.results;
+                    stopTurn = false;
+                }
             }
-            else
+            catch
             {
-                tbxStopName2.Text = stopName2;
-                lvListBuses2.ItemsSource = data.results;
-                stopTurn = false;
+                MessageDialog message = new MessageDialog("You have no data..");
+                await message.ShowAsync();
             }
+           
         }
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
@@ -175,12 +185,12 @@ namespace appDevProject
                 mapIcon.Location = new Geopoint(snPosition);
                 mapIcon.Title = galwayStops[i].shortname;
                 mapIcon.Image = mapBillboardStreamReference;
+                mapIcon.Tag = "Next Bus is in 2min";
                 MapControl1.MapElements.Add(mapIcon);
             }
             System.Diagnostics.Debug.WriteLine("Bus Stop points added..");
 
             await getUserLocationAsync();
-
         }
         
         private async Task getUserLocationAsync()
@@ -197,8 +207,10 @@ namespace appDevProject
                     Geolocator geolocator = new Geolocator { DesiredAccuracyInMeters = 0 };
                     geolocator.StatusChanged += Geolocator_StatusChanged;
                     Geoposition pos = await geolocator.GetGeopositionAsync();
+                    
 
                     BasicGeoposition snPosition = new BasicGeoposition();
+                    
                     snPosition.Latitude = (float)pos.Coordinate.Point.Position.Latitude;
                     snPosition.Longitude = (float)pos.Coordinate.Point.Position.Longitude;
 
@@ -208,6 +220,11 @@ namespace appDevProject
                     mapIcon.Title = "Your Position";
                     mapIcon.Image = mapBillboardStreamReference;
                     MapControl1.MapElements.Add(mapIcon);
+                    MapControl1.Center = new Geopoint(snPosition);
+                    MapControl1.ZoomLevel = 17;
+
+                    tileNotification((double)pos.Coordinate.Point.Position.Latitude, (double)pos.Coordinate.Point.Position.Longitude);
+
                     break;
 
                 case GeolocationAccessStatus.Denied:
@@ -251,6 +268,21 @@ namespace appDevProject
                         break;
                 }
             });
+        }
+
+        private void tileNotification(double lat, double lon)
+        {
+
+            var uri = String.Format("http://busstopservice20180218022023.azurewebsites.net/?lat={0}&lon={1}", lat, lon);
+
+            var tileContent = new Uri(uri);
+
+            var requestedInterval = PeriodicUpdateRecurrence.HalfHour;
+
+            var updater = TileUpdateManager.CreateTileUpdaterForApplication();
+
+            updater.StartPeriodicUpdate(tileContent, requestedInterval);
+
         }
     }
 }

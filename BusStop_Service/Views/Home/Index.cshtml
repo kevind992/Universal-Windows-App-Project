@@ -1,9 +1,13 @@
 ﻿<tile>
     <visual version="2">
         <binding template="TileSquare150x150Text01" fallback="TileSquareText01">
-            <text id="1">@ViewBag.BusNo</text>
-            <text id="2">@ViewBag.Time</text>
-            <text id="3">@ViewBag.Destination</text>
+            <text id="1">@ViewBag.Message1</text>
+            <text id="2">@ViewBag.Name</text>
+            <text id="3">@DateTime.Now.ToShortTimeString()</text>
+        </binding>
+        <binding template="TileWide310x150BlockAndText01">
+            <text id="1">@ViewBag.Message2</text>
+            <text id="2">@ViewBag.Name</text>
             <text id="3">@DateTime.Now.ToShortTimeString()</text>
         </binding>
     </visual>
