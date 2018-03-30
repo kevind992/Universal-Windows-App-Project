@@ -239,6 +239,7 @@ namespace appDevProject
         {
             var access = await Geolocator.RequestAccessAsync();
 
+
             RandomAccessStreamReference mapBillboardStreamReference =
                 RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/UserLocation.png"));
 
@@ -347,6 +348,21 @@ namespace appDevProject
                 }
             }
             return id;
+        }
+
+        private async Task ToggleSwitch_ToggledAsync(object sender, RoutedEventArgs e)
+        {
+
+            var access = await Geolocator.RequestAccessAsync();
+
+            if (togLocation.IsOn == true)
+            {
+                access = GeolocationAccessStatus.Allowed;
+            }
+            else
+            {
+                access = GeolocationAccessStatus.Denied;
+            }
         }
     }
 }
