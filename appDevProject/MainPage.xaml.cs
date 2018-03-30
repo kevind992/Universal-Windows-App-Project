@@ -75,6 +75,8 @@ namespace appDevProject
                 getBusStops();
 
                 setMap();
+
+                populateSettings();
             }
         }
 
@@ -158,7 +160,18 @@ namespace appDevProject
                     if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
                     {
                         galwayStops.Add(busData.results[i]);
-                        
+
+                        //Populating Setting Flyout 1
+                        MenuFlyoutItem item1 = new MenuFlyoutItem();
+                        item1.Text = busData.results[i].fullname.ToString();
+                        item1.Click += Item1_Click; ;
+                        flyStopsChange1.Items.Add(item1);
+                        //Populating Setting Flyout 2
+                        MenuFlyoutItem item2 = new MenuFlyoutItem();
+                        item2.Text = busData.results[i].fullname.ToString();
+                        item2.Click += Item2_Click; 
+                        flyStopsChange2.Items.Add(item2);
+
                     }
                 }
             }
@@ -166,6 +179,35 @@ namespace appDevProject
             System.Diagnostics.Debug.WriteLine("Finished Loading bus stops for locations..");
 
             await setIconsAsync();
+        }
+
+        
+
+        private void Item1_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Start ID1: "+ stopID1);
+            MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            stopName1 = click.Text;
+            stopID1 = searchID(stopName1);
+            localSettings.Values["stopName1"] = stopName1;
+            localSettings.Values["stopID1"] = stopID1;
+            System.Diagnostics.Debug.WriteLine("End ID1: " + stopID1);
+            tblStopChange1.Text = click.Text;
+            
+        }
+
+        private void Item2_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Start ID2: " + stopID2);
+            MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            stopName2 = click.Text;
+            stopID2 = searchID(stopName2);
+            localSettings.Values["stopName2"] = stopName2;
+            localSettings.Values["stopID2"] = stopID2;
+            System.Diagnostics.Debug.WriteLine("End ID2: " + stopID2);
+            tblStopChange2.Text = click.Text;
         }
 
         private async Task setIconsAsync()
@@ -283,6 +325,28 @@ namespace appDevProject
 
             updater.StartPeriodicUpdate(tileContent, requestedInterval);
 
+        }
+
+        private void populateSettings()
+        {
+
+            tblStopChange1.Text = stopName1;
+            tblStopChange2.Text = stopName2;
+
+        }
+
+        private string searchID(string s)
+        {
+            string id = "";
+
+            for (int i = 0; i < galwayStops.Count; i++)
+            {
+                if (galwayStops[i].fullname.Equals(s))
+                {
+                    id = galwayStops[i].stopid;
+                }
+            }
+            return id;
         }
     }
 }

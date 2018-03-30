@@ -69,7 +69,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Vertical" Margin="10,10,0,0">
+                    <StackPanel Grid.Row="0" Orientation="Vertical" Margin="10,50,0,0">
                         <TextBlock Text="Stop 1" Margin="40,0,0,0"/>
                         <StackPanel Grid.Row="0" Margin="20,0,0,0" Orientation="Horizontal">
                             <Button x:Name="btnStopsChange1" Height="30" Width="100" Margin="20">
@@ -79,7 +79,7 @@
                                     </MenuFlyout>
                                 </Button.Flyout>
                             </Button>
-                            <TextBlock x:Name="tblStopChange1"/>
+                            <TextBlock x:Name="tblStopChange1" Margin="0,25,0,0" Text="Stop 1 name"/>
                         </StackPanel>
                         <TextBlock Text="Stop 2" Margin="40,0,0,0"/>
                         <StackPanel Grid.Row="0" Margin="20,0,0,0" Orientation="Horizontal">
@@ -90,9 +90,9 @@
                                     </MenuFlyout>
                                 </Button.Flyout>
                             </Button>
-                            <TextBlock x:Name="tblStopChange2"/>
+                            <TextBlock x:Name="tblStopChange2" Margin="0,25,0,0" Text="Stop 2 name"/>
                         </StackPanel>
-                        <ToggleSwitch Header="Location" OffContent="Lcation Off" OnContent="Location On" IsOn="True" Margin="50,0,0,0"/>
+                        <ToggleSwitch Header="Location" OffContent="Location Off" OnContent="Location On" IsOn="True" Margin="40,0,0,0"/>
                     </StackPanel>
                 </Grid>
             </PivotItem>

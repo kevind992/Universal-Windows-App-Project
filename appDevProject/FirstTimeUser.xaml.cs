@@ -82,21 +82,15 @@ namespace UWP_Main_App
                         {
                             MenuFlyoutItem item = new MenuFlyoutItem();
                             item.Text = busData.results[i].fullname.ToString();
-                            //suggestions.Add(busData.results[i].fullname.ToString());
                             item.Click += Item_Click1;
                             flyStops1.Items.Add(item);
 
+                            MenuFlyoutItem item2 = new MenuFlyoutItem();
+                            item2.Text = busData.results[i].fullname.ToString();
+                            item2.Click += Item_Click2;
+                            flyStops2.Items.Add(item2);
+
                             galwayStops.Add(busData.results[i]);
-                        }
-                    }
-                    if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
-                    {
-                        if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
-                        {
-                            MenuFlyoutItem item = new MenuFlyoutItem();
-                            item.Text = busData.results[i].fullname.ToString();
-                            item.Click += Item_Click2;
-                            flyStops2.Items.Add(item);
                         }
                     }
                 }
