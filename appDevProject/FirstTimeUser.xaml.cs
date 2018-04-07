@@ -186,5 +186,18 @@ namespace UWP_Main_App
             }
 
         }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            showWelcomeMessageAsync();        
+        }
+
+        private async System.Threading.Tasks.Task showWelcomeMessageAsync()
+        {
+            MessageDialog message = new MessageDialog("Welcome to Commute! Please Select two Bus-Stops from the two select boxes on the on the right and Click the Submit Button.");
+            await message.ShowAsync();
+        }
     }
 }

@@ -349,7 +349,6 @@ namespace appDevProject
             }
             return id;
         }
-
         private async void togLocation_ToggledAsync(object sender, RoutedEventArgs e)
         {
             var access = await Geolocator.RequestAccessAsync();

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWP_Main_App", "appDevProject\UWP_Main_App.csproj", "{27414726-6C50-4FE9-8F6A-0B9B13E5CD3E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2219CCCC-2DD4-47C2-80A5-198671AA0170} = {2219CCCC-2DD4-47C2-80A5-198671AA0170}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusStop_Service", "BusStop_Service\BusStop_Service.csproj", "{2219CCCC-2DD4-47C2-80A5-198671AA0170}"
 EndProject

@@ -67,7 +67,7 @@
                 <Grid x:Name="grdSettings">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Vertical" Margin="10,50,0,0">
                         <TextBlock Text="Stop 1" Margin="40,0,0,0"/>
@@ -94,6 +94,7 @@
                         </StackPanel>
                         <ToggleSwitch x:Name="togLocation" Header="Location" OffContent="Location Off" OnContent="Location On" IsOn="True" Margin="40,0,0,0" Toggled="togLocation_ToggledAsync"/>
                     </StackPanel>
+                    <TextBlock Grid.Row="1" Text="No Location or User data is being stored outside of this device." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,20"/>
                 </Grid>
             </PivotItem>
         </Pivot>

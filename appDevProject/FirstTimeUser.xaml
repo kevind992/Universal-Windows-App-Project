@@ -37,7 +37,7 @@
                         </Button.Flyout>
                     </Button>
                     <TextBlock x:Name="tblStop2" Text="Please Select Stop 2" Margin="20" HorizontalAlignment="Center"/>
-                    <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Content="Search" Width="250" Click="btnSubmit_ClickAsync" Margin="80"/>
+                    <Button x:Name="btnSubmit" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Content="Submit" Width="250" Click="btnSubmit_ClickAsync" Margin="80"/>
 
                 </StackPanel>
             </Grid>
