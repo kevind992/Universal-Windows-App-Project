@@ -58,9 +58,16 @@
             </PivotItem>
             <PivotItem Header="Nearby">
                 <Grid>
-                    <Maps:MapControl  
+                    <Maps:MapControl MapElementClick="MapControl1_MapElementClick" 
                         x:Name="MapControl1"
                         MapServiceToken="OC53XbqKBuW48DF6NXBZ~jCnzcwpDjp570OYrdQ1keQ~AupTxaqXEeWqZhcrap4T0Ie5cq_vWUuA9J-pVi5UrLSbUuNu1FVztRcFvTgrry62"  />
+                    <Grid x:Name="grdMapStopTimes" Background="White" Height="300" Visibility="Collapsed">
+                        <ListView x:Name="lvListMapTimes" Margin="1"  Grid.Row="0"
+                            Height="200"
+                            ItemTemplate="{StaticResource myTemplate}">
+                        </ListView>
+                        <Button x:Name="btnCloseBox" Content="Close" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" Click="btnCloseBox_Click"/>
+                    </Grid>
                 </Grid>
             </PivotItem>
             <PivotItem Header="Settings">

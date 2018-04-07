@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UWP_Main_App;
@@ -96,6 +97,10 @@ namespace appDevProject
                     tbxStopName1.Text = stopName1;
                     lvListBuses1.ItemsSource = data.results;                
                 }
+                else if (sPos == 3)
+                {
+                    lvListMapTimes.ItemsSource = data.results;
+                }
                 else
                 {
                     tbxStopName2.Text = stopName2;
@@ -123,7 +128,7 @@ namespace appDevProject
             lvListBuses1.Items.Clear();
             lvListBuses2.ItemsSource = null;
             lvListBuses2.Items.Clear();
-
+            
             getSearchResults(stopID1, 1);
             getSearchResults(stopID2, 2);
         }
@@ -221,11 +226,10 @@ namespace appDevProject
                 snPosition.Longitude = galwayStops[i].longitude;
 
                 MapIcon mapIcon = new MapIcon();
-
+                mapIcon.Tag = galwayStops[i].displaystopid;
                 mapIcon.Location = new Geopoint(snPosition);
                 mapIcon.Title = galwayStops[i].shortname;
                 mapIcon.Image = mapBillboardStreamReference;
-                mapIcon.Tag = "Next Bus is in 2min";
                 MapControl1.MapElements.Add(mapIcon);
             }
             System.Diagnostics.Debug.WriteLine("Bus Stop points added..");
@@ -365,6 +369,18 @@ namespace appDevProject
         private void pvtOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             refresh();
+        }
+
+        private void MapControl1_MapElementClick(MapControl sender, MapElementClickEventArgs args)
+        {          
+            MapIcon myClickedIcon = args.MapElements.FirstOrDefault(x => x is MapIcon) as MapIcon;
+            grdMapStopTimes.Visibility = Visibility.Visible;      
+            getSearchResults((string)myClickedIcon.Tag, 3);
+        }
+
+        private void btnCloseBox_Click(object sender, RoutedEventArgs e)
+        {
+            grdMapStopTimes.Visibility = Visibility.Collapsed;
         }
     }
 }
