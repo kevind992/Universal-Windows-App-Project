@@ -39,8 +39,7 @@ namespace appDevProject
         private string stopName2;
         private string stopID1;
         private string stopID2;
-        private bool stopTurn = true;
-
+       
         private List<Result> galwayStops = new List<Result>();
 
         public object MapIcon1 { get; private set; }
@@ -69,8 +68,8 @@ namespace appDevProject
             }
             else
             {
-                getSearchResults(stopID1);
-                getSearchResults(stopID2);
+                getSearchResults(stopID1,1);
+                getSearchResults(stopID2,2);
 
                 getBusStops();
 
@@ -80,7 +79,7 @@ namespace appDevProject
             }
         }
 
-        async void getSearchResults(string stop)
+        async void getSearchResults(string stop, int sPos)
         {
             try
             {
@@ -92,28 +91,31 @@ namespace appDevProject
 
                 var data = JsonConvert.DeserializeObject<Rootobject2>(response);
 
-                if (stopTurn == false)
+                if (sPos == 1)
                 {
                     tbxStopName1.Text = stopName1;
-                    lvListBuses1.ItemsSource = data.results;
-                    stopTurn = true;
+                    lvListBuses1.ItemsSource = data.results;                
                 }
                 else
                 {
                     tbxStopName2.Text = stopName2;
                     lvListBuses2.ItemsSource = data.results;
-                    stopTurn = false;
                 }
             }
             catch
             {
-                MessageDialog message = new MessageDialog("You have no data..");
+                MessageDialog message = new MessageDialog("You have no Internet Data..");
                 await message.ShowAsync();
             }
            
         }
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            refresh();
+        }
+
+        private void refresh()
         {
             System.Diagnostics.Debug.WriteLine("Refresh Selected..");
 
@@ -122,10 +124,8 @@ namespace appDevProject
             lvListBuses2.ItemsSource = null;
             lvListBuses2.Items.Clear();
 
-            stopTurn = true;
-
-            getSearchResults(stopID1);
-            getSearchResults(stopID2);
+            getSearchResults(stopID1, 1);
+            getSearchResults(stopID2, 2);
         }
 
         private void setMap()
@@ -180,8 +180,6 @@ namespace appDevProject
 
             await setIconsAsync();
         }
-
-        
 
         private void Item1_Click(object sender, RoutedEventArgs e)
         {
@@ -362,6 +360,11 @@ namespace appDevProject
                 access = GeolocationAccessStatus.Denied;
 
             }
+        }
+
+        private void pvtOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            refresh();
         }
     }
 }
