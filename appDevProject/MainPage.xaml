@@ -40,11 +40,14 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
                     <TextBlock x:Name="tbxStopName1" Text="Stop 1" Grid.Row="0"/>
                     <Button x:Name="btnRefresh"  VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnRefresh_Click" Grid.Row="0">
                         <SymbolIcon Symbol="Refresh"/>
                     </Button>
+                    <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Horizontal">
+                        <TextBlock Text="SERVICE" Margin="25,50,0,20"/>
+                        <TextBlock Text="DUE TIME" Margin="595,50,0,20"/>
+                    </StackPanel>
                     <ListView x:Name="lvListBuses1" Margin="10,50, 0, 0"  Grid.Row="0"
                          Height="200"
                         ItemTemplate="{StaticResource myTemplate}">
@@ -62,6 +65,10 @@
                         x:Name="MapControl1"
                         MapServiceToken="OC53XbqKBuW48DF6NXBZ~jCnzcwpDjp570OYrdQ1keQ~AupTxaqXEeWqZhcrap4T0Ie5cq_vWUuA9J-pVi5UrLSbUuNu1FVztRcFvTgrry62"  />
                     <Grid x:Name="grdMapStopTimes" Background="White" Height="300" Visibility="Collapsed">
+                        <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
+                            <TextBlock Text="SERVICE" Margin="15,10,0,0"/>
+                            <TextBlock Text="DUE TIME" Margin="590,10,0,0"/>
+                        </StackPanel>
                         <ListView x:Name="lvListMapTimes" Margin="1"  Grid.Row="0"
                             Height="200"
                             ItemTemplate="{StaticResource myTemplate}">
@@ -100,7 +107,8 @@
                         </StackPanel>
                         <ToggleSwitch x:Name="togLocation" Header="Location" OffContent="Location Off" OnContent="Location On" IsOn="True" Margin="40,0,0,0" Toggled="togLocation_ToggledAsync"/>
                     </StackPanel>
-                    <TextBlock Grid.Row="1" Text="No Location or User data is being stored outside of this device." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,20"/>
+                    <TextBlock Grid.Row="1" Text="No Location or User data is being stored outside of this device." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,30"/>
+                    <TextBlock Text="All live bus data is sourced from https://data.gov.ie/dataset/real-time-passenger-information-rtpi-for-dublin-bus-bus-eireann-luas-and-irish-rail" FontSize="10" VerticalAlignment="Bottom" Margin="10,0,0,10"/>
                 </Grid>
             </PivotItem>
         </Pivot>

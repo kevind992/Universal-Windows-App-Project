@@ -381,6 +381,9 @@ namespace appDevProject
         private void btnCloseBox_Click(object sender, RoutedEventArgs e)
         {
             grdMapStopTimes.Visibility = Visibility.Collapsed;
+            lvListMapTimes.ItemsSource = null;
+            lvListMapTimes.Items.Clear();
+
         }
     }
 }
