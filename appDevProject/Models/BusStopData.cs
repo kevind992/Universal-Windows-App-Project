@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace appDevProject
 {
-
-    public class Rootobject
+    
+    public class RootBusStopobject
     {
         public string errorcode { get; set; }
         public string errormessage { get; set; }

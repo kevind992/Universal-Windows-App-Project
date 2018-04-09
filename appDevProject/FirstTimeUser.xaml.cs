@@ -52,8 +52,8 @@ namespace UWP_Main_App
         public FirstTimeUser()
         {
             this.InitializeComponent();
-            
-            suggestions = new ObservableCollection<string>();
+
+            // Running the getBusStops method which populates the the fly menus
             getBusStops();
         }
 
@@ -74,7 +74,7 @@ namespace UWP_Main_App
                 string response = await client.GetStringAsync(url);
                 // Using Newtonsoft Json to parse the responce. 
                 // This uses c# class BusStopData
-                var busData = JsonConvert.DeserializeObject<Rootobject>(response);
+                var busData = JsonConvert.DeserializeObject<RootBusStopobject>(response);
 
                 System.Diagnostics.Debug.WriteLine("Loading Data..");
 
@@ -102,7 +102,7 @@ namespace UWP_Main_App
                             // Assigning it a name
                             item2.Text = busData.results[i].fullname.ToString();
                             // Assigning it with a click event
-                            item2.Click += Item_Click1;
+                            item2.Click += Item_Click2;
                             // Adding item into flyStops2
                             flyStops2.Items.Add(item2);
 

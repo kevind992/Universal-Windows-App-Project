@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace appDevProject
 {
 
-    public class Rootobject2
+    public class RootBusStopTimeObject
     {
         public string errorcode { get; set; }
         public string errormessage { get; set; }

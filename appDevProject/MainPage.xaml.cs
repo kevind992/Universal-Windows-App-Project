@@ -30,7 +30,7 @@ namespace appDevProject
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
+        #region Variables
         private double galLatLow = 53.01347187;
         private double galLatHigh = 53.54880427;
         private double galLongLeft = -9.58028032;
@@ -45,41 +45,14 @@ namespace appDevProject
 
         public object MapIcon1 { get; private set; }
 
+        #endregion
+
         public MainPage()
         {
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-            stopID1 = (string)localSettings.Values["stopID1"];
-            stopID2 = (string)localSettings.Values["stopID2"];
-            stopName1 = (string)localSettings.Values["stopName1"];
-            stopName2 = (string)localSettings.Values["stopName2"];
-
-            if(string.IsNullOrEmpty(stopID1) || string.IsNullOrEmpty(stopID2))
-            {
-                System.Diagnostics.Debug.WriteLine("Is empty..");
-                localSettings.Values["IsFirstTime"] = true;
-                this.Frame.Navigate(typeof(FirstTimeUser));
-            }
-            else
-            {
-                getSearchResults(stopID1,1);
-                getSearchResults(stopID2,2);
-
-                getBusStops();
-
-                setMap();
-
-                populateSettings();
-            }
-        }
-
+        #region HTTP Get Methods - Used for getting data from the api
         async void getSearchResults(string stop, int sPos)
         {
             try
@@ -90,7 +63,7 @@ namespace appDevProject
 
                 string response = await client.GetStringAsync(url);
 
-                var data = JsonConvert.DeserializeObject<Rootobject2>(response);
+                var data = JsonConvert.DeserializeObject<RootBusStopTimeObject>(response);
 
                 if (sPos == 1)
                 {
@@ -114,39 +87,6 @@ namespace appDevProject
             }
            
         }
-
-        private void btnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            refresh();
-        }
-
-        private void refresh()
-        {
-            System.Diagnostics.Debug.WriteLine("Refresh Selected..");
-
-            lvListBuses1.ItemsSource = null;
-            lvListBuses1.Items.Clear();
-            lvListBuses2.ItemsSource = null;
-            lvListBuses2.Items.Clear();
-            
-            getSearchResults(stopID1, 1);
-            getSearchResults(stopID2, 2);
-        }
-
-        private void setMap()
-        {
-            BasicGeoposition cityPosition = new BasicGeoposition() {
-                Latitude = 53.281551,
-                Longitude = -9.035187
-            };
-
-            Geopoint cityCentre = new Geopoint(cityPosition);
-
-            MapControl1.Center = cityCentre;
-            MapControl1.LandmarksVisible = true;
-            MapControl1.ZoomLevel = 12;
-        }
-
         private async void getBusStops()
         {
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&operator=BE&format=json%22";
@@ -155,8 +95,8 @@ namespace appDevProject
 
             string response2 = await client.GetStringAsync(url);
 
-            var busData = JsonConvert.DeserializeObject<Rootobject>(response2);
-            
+            var busData = JsonConvert.DeserializeObject<RootBusStopobject>(response2);
+
 
             for (int i = 1; i < busData.numberofresults; i++)
             {
@@ -174,45 +114,82 @@ namespace appDevProject
                         //Populating Setting Flyout 2
                         MenuFlyoutItem item2 = new MenuFlyoutItem();
                         item2.Text = busData.results[i].fullname.ToString();
-                        item2.Click += Item2_Click; 
+                        item2.Click += Item2_Click;
                         flyStopsChange2.Items.Add(item2);
 
                     }
                 }
             }
-            
+
             System.Diagnostics.Debug.WriteLine("Finished Loading bus stops for locations..");
 
             await setIconsAsync();
         }
+        #endregion
 
-        private void Item1_Click(object sender, RoutedEventArgs e)
+        #region refesh - method to refresh bus times
+        private void refresh()
         {
-            System.Diagnostics.Debug.WriteLine("Start ID1: "+ stopID1);
-            MenuFlyoutItem click = (MenuFlyoutItem)sender;
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            stopName1 = click.Text;
-            stopID1 = searchID(stopName1);
-            localSettings.Values["stopName1"] = stopName1;
-            localSettings.Values["stopID1"] = stopID1;
-            System.Diagnostics.Debug.WriteLine("End ID1: " + stopID1);
-            tblStopChange1.Text = click.Text;
+            System.Diagnostics.Debug.WriteLine("Refresh Selected..");
+
+            lvListBuses1.ItemsSource = null;
+            lvListBuses1.Items.Clear();
+            lvListBuses2.ItemsSource = null;
+            lvListBuses2.Items.Clear();
             
+            getSearchResults(stopID1, 1);
+            getSearchResults(stopID2, 2);
         }
+        #endregion
 
-        private void Item2_Click(object sender, RoutedEventArgs e)
+        #region searchId Method - used for searching for the id's of the selected bus stop names
+        private string searchID(string s)
         {
-            System.Diagnostics.Debug.WriteLine("Start ID2: " + stopID2);
-            MenuFlyoutItem click = (MenuFlyoutItem)sender;
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            stopName2 = click.Text;
-            stopID2 = searchID(stopName2);
-            localSettings.Values["stopName2"] = stopName2;
-            localSettings.Values["stopID2"] = stopID2;
-            System.Diagnostics.Debug.WriteLine("End ID2: " + stopID2);
-            tblStopChange2.Text = click.Text;
-        }
+            string id = "";
 
+            for (int i = 0; i < galwayStops.Count; i++)
+            {
+                if (galwayStops[i].fullname.Equals(s))
+                {
+                    id = galwayStops[i].stopid;
+                }
+            }
+            return id;
+        }
+        #endregion
+
+        #region Tile Notification Method
+        private void tileNotification(double lat, double lon)
+        {
+
+            var uri = String.Format("http://busstopservice20180218022023.azurewebsites.net/?lat={0}&lon={1}", lat, lon);
+
+            var tileContent = new Uri(uri);
+
+            var requestedInterval = PeriodicUpdateRecurrence.HalfHour;
+
+            var updater = TileUpdateManager.CreateTileUpdaterForApplication();
+
+            updater.StartPeriodicUpdate(tileContent, requestedInterval);
+
+        }
+        #endregion
+
+        #region Location and Map Methods
+        private void setMap()
+        {
+            BasicGeoposition cityPosition = new BasicGeoposition()
+            {
+                Latitude = 53.281551,
+                Longitude = -9.035187
+            };
+
+            Geopoint cityCentre = new Geopoint(cityPosition);
+
+            MapControl1.Center = cityCentre;
+            MapControl1.LandmarksVisible = true;
+            MapControl1.ZoomLevel = 12;
+        }
         private async Task setIconsAsync()
         {
 
@@ -236,7 +213,13 @@ namespace appDevProject
 
             await getUserLocationAsync();
         }
-        
+        private void populateSettings()
+        {
+
+            tblStopChange1.Text = stopName1;
+            tblStopChange2.Text = stopName2;
+
+        }
         private async Task getUserLocationAsync()
         {
             var access = await Geolocator.RequestAccessAsync();
@@ -252,10 +235,10 @@ namespace appDevProject
                     Geolocator geolocator = new Geolocator { DesiredAccuracyInMeters = 0 };
                     geolocator.StatusChanged += Geolocator_StatusChanged;
                     Geoposition pos = await geolocator.GetGeopositionAsync();
-                    
+
 
                     BasicGeoposition snPosition = new BasicGeoposition();
-                    
+
                     snPosition.Latitude = (float)pos.Coordinate.Point.Position.Latitude;
                     snPosition.Longitude = (float)pos.Coordinate.Point.Position.Longitude;
 
@@ -277,7 +260,6 @@ namespace appDevProject
                     break;
             }
         }
-
         async private void Geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs e)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -314,43 +296,17 @@ namespace appDevProject
                 }
             });
         }
+        #endregion
 
-        private void tileNotification(double lat, double lon)
+        #region Pivot Option Changed Event Method
+        private void pvtOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-            var uri = String.Format("http://busstopservice20180218022023.azurewebsites.net/?lat={0}&lon={1}", lat, lon);
-
-            var tileContent = new Uri(uri);
-
-            var requestedInterval = PeriodicUpdateRecurrence.HalfHour;
-
-            var updater = TileUpdateManager.CreateTileUpdaterForApplication();
-
-            updater.StartPeriodicUpdate(tileContent, requestedInterval);
-
+            refresh();
         }
+        #endregion
 
-        private void populateSettings()
-        {
+        #region CLick and Tog Event Methods
 
-            tblStopChange1.Text = stopName1;
-            tblStopChange2.Text = stopName2;
-
-        }
-
-        private string searchID(string s)
-        {
-            string id = "";
-
-            for (int i = 0; i < galwayStops.Count; i++)
-            {
-                if (galwayStops[i].fullname.Equals(s))
-                {
-                    id = galwayStops[i].stopid;
-                }
-            }
-            return id;
-        }
         private async void togLocation_ToggledAsync(object sender, RoutedEventArgs e)
         {
             var access = await Geolocator.RequestAccessAsync();
@@ -365,19 +321,12 @@ namespace appDevProject
 
             }
         }
-
-        private void pvtOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            refresh();
-        }
-
         private void MapControl1_MapElementClick(MapControl sender, MapElementClickEventArgs args)
         {          
             MapIcon myClickedIcon = args.MapElements.FirstOrDefault(x => x is MapIcon) as MapIcon;
             grdMapStopTimes.Visibility = Visibility.Visible;      
             getSearchResults((string)myClickedIcon.Tag, 3);
         }
-
         private void btnCloseBox_Click(object sender, RoutedEventArgs e)
         {
             grdMapStopTimes.Visibility = Visibility.Collapsed;
@@ -385,5 +334,68 @@ namespace appDevProject
             lvListMapTimes.Items.Clear();
 
         }
+        private void Item1_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Start ID1: " + stopID1);
+            MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            stopName1 = click.Text;
+            stopID1 = searchID(stopName1);
+            localSettings.Values["stopName1"] = stopName1;
+            localSettings.Values["stopID1"] = stopID1;
+            System.Diagnostics.Debug.WriteLine("End ID1: " + stopID1);
+            tblStopChange1.Text = click.Text;
+
+        }
+        private void Item2_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Start ID2: " + stopID2);
+            MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            stopName2 = click.Text;
+            stopID2 = searchID(stopName2);
+            localSettings.Values["stopName2"] = stopName2;
+            localSettings.Values["stopID2"] = stopID2;
+            System.Diagnostics.Debug.WriteLine("End ID2: " + stopID2);
+            tblStopChange2.Text = click.Text;
+        }
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            refresh();
+        }
+        #endregion
+
+        #region OnNavigatedTo
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+            stopID1 = (string)localSettings.Values["stopID1"];
+            stopID2 = (string)localSettings.Values["stopID2"];
+            stopName1 = (string)localSettings.Values["stopName1"];
+            stopName2 = (string)localSettings.Values["stopName2"];
+
+            if (string.IsNullOrEmpty(stopID1) || string.IsNullOrEmpty(stopID2))
+            {
+                System.Diagnostics.Debug.WriteLine("Is empty..");
+                localSettings.Values["IsFirstTime"] = true;
+                this.Frame.Navigate(typeof(FirstTimeUser));
+            }
+            else
+            {
+                getSearchResults(stopID1, 1);
+                getSearchResults(stopID2, 2);
+
+                getBusStops();
+
+                setMap();
+
+                populateSettings();
+            }
+        }
+        #endregion
+
     }
 }
