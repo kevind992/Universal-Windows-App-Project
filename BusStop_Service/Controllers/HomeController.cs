@@ -20,6 +20,8 @@ namespace BusStop_Service.Controllers
         // GET: Home
         public async Task<ActionResult> Index(double lat, double lon)
         {
+            // Addapted from : https://channel9.msdn.com/Series/Windows-10-development-for-absolute-beginners/UWP-061-UWP-Weather-Updating-the-Tile-with-Periodic-Notifications
+
             string stopName = await GetShortestBusStop(lat, lon);
 
             ViewBag.Message1 = "Nearest";

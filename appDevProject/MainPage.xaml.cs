@@ -53,28 +53,32 @@ namespace appDevProject
         }
 
         #region HTTP Get Methods - Used for getting data from the api
+        // Method for getting all the bus times
         async void getSearchResults(string stop, int sPos)
         {
+            // Adapted from : https://www.youtube.com/watch?v=UMQ2JVOE_xE
+
             try
             {
+                // Url which is used for making the get request
                 string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stop + "&format=json";
-
+                //Creating a Http client
                 HttpClient client = new HttpClient();
-
+                // Making the request and putting the response into responce
                 string response = await client.GetStringAsync(url);
-
+                // Parsing the data using NewtonJson package
                 var data = JsonConvert.DeserializeObject<RootBusStopTimeObject>(response);
 
-                if (sPos == 1)
+                if (sPos == 1) // if sPos is 1 then add to the top listbox on the bus times pivot page
                 {
                     tbxStopName1.Text = stopName1;
                     lvListBuses1.ItemsSource = data.results;                
                 }
-                else if (sPos == 3)
+                else if (sPos == 3) // if sPos is 3 then add to the map listbox
                 {
                     lvListMapTimes.ItemsSource = data.results;
                 }
-                else
+                else // else add to the bottem listbox on the bus times pivot page
                 {
                     tbxStopName2.Text = stopName2;
                     lvListBuses2.ItemsSource = data.results;
@@ -82,26 +86,35 @@ namespace appDevProject
             }
             catch
             {
+                // Display message to the user
                 MessageDialog message = new MessageDialog("You have no Internet Data..");
                 await message.ShowAsync();
             }
            
         }
+        // Method used to gathering all the bus stops in the Co. Galway area
         private async void getBusStops()
         {
+
+            // Adapted from : https://www.youtube.com/watch?v=UMQ2JVOE_xE
+
+            // Url which is used for making the get request
             string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&operator=BE&format=json%22";
-
+            //Creating a Http client
             HttpClient client = new HttpClient();
-
+            // Making the request and putting the response into responce2
             string response2 = await client.GetStringAsync(url);
-
+            // Parsing the data using NewtonJson package
             var busData = JsonConvert.DeserializeObject<RootBusStopobject>(response2);
 
-
+            // An algorithm to filter throught all the bus stops and store the stops which are in the galway area.
+            // This is done by setting 4 points using Latitude and Longtitude.
             for (int i = 1; i < busData.numberofresults; i++)
             {
+                // If bus stop is within set latitudes
                 if (busData.results[i].latitude < galLatHigh && busData.results[i].latitude > galLatLow)
                 {
+                    // If bus stop is within set logitudes
                     if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
                     {
                         galwayStops.Add(busData.results[i]);
@@ -132,11 +145,12 @@ namespace appDevProject
         {
             System.Diagnostics.Debug.WriteLine("Refresh Selected..");
 
+            // Emptying both listboxs
             lvListBuses1.ItemsSource = null;
             lvListBuses1.Items.Clear();
             lvListBuses2.ItemsSource = null;
             lvListBuses2.Items.Clear();
-            
+            //Repopulating listboxes
             getSearchResults(stopID1, 1);
             getSearchResults(stopID2, 2);
         }
@@ -145,15 +159,19 @@ namespace appDevProject
         #region searchId Method - used for searching for the id's of the selected bus stop names
         private string searchID(string s)
         {
+            // creating an empty string
             string id = "";
-
+            //Looping throught all the stops
             for (int i = 0; i < galwayStops.Count; i++)
             {
+                // if the 2 stops match
                 if (galwayStops[i].fullname.Equals(s))
                 {
+                    // store the id
                     id = galwayStops[i].stopid;
                 }
             }
+            // Returning the id
             return id;
         }
         #endregion
@@ -161,23 +179,26 @@ namespace appDevProject
         #region Tile Notification Method
         private void tileNotification(double lat, double lon)
         {
+            // Adapted from : https://channel9.msdn.com/Series/Windows-10-development-for-absolute-beginners/UWP-061-UWP-Weather-Updating-the-Tile-with-Periodic-Notifications
 
+            // Url of Azure Service which sends latitude and longitude
             var uri = String.Format("http://busstopservice20180218022023.azurewebsites.net/?lat={0}&lon={1}", lat, lon);
-
+            // Setting tile
             var tileContent = new Uri(uri);
-
+            // Setting update of tile for every half hour       
             var requestedInterval = PeriodicUpdateRecurrence.HalfHour;
-
             var updater = TileUpdateManager.CreateTileUpdaterForApplication();
-
+            // Starting tile notification
             updater.StartPeriodicUpdate(tileContent, requestedInterval);
 
         }
         #endregion
 
         #region Location and Map Methods
+        // Method for positioning the map over galway city
         private void setMap()
         {
+            // Map will line up the the selected latitude and longitude
             BasicGeoposition cityPosition = new BasicGeoposition()
             {
                 Latitude = 53.281551,
@@ -190,23 +211,34 @@ namespace appDevProject
             MapControl1.LandmarksVisible = true;
             MapControl1.ZoomLevel = 12;
         }
+        // Method for adding bus stop icons to the map
         private async Task setIconsAsync()
         {
+            // Adapted from : https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/display-poi
 
-            RandomAccessStreamReference mapBillboardStreamReference =
+            // Creating a Random access stream reference for the bus stop icon
+            RandomAccessStreamReference mapStreamReference =
                 RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/BusStopLogo.png"));
 
+            //for every bus stop
             for (int i = 0; i < galwayStops.Count; i++)
             {
+                // Create a basic geoposition
                 BasicGeoposition snPosition = new BasicGeoposition();
+                // Set the latitude and longitude
                 snPosition.Latitude = galwayStops[i].latitude;
                 snPosition.Longitude = galwayStops[i].longitude;
-
+                //Create new Map icon
                 MapIcon mapIcon = new MapIcon();
+                // give it a tag of bus stop id
                 mapIcon.Tag = galwayStops[i].displaystopid;
+                // Set the location of the map icon
                 mapIcon.Location = new Geopoint(snPosition);
+                // Set the name of the map icon
                 mapIcon.Title = galwayStops[i].shortname;
-                mapIcon.Image = mapBillboardStreamReference;
+                // Set the image
+                mapIcon.Image = mapStreamReference;
+                // Add the icon to the map
                 MapControl1.MapElements.Add(mapIcon);
             }
             System.Diagnostics.Debug.WriteLine("Bus Stop points added..");
@@ -222,35 +254,47 @@ namespace appDevProject
         }
         private async Task getUserLocationAsync()
         {
+            //Adapted from : https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/get-location
+
+            // Request access status
             var access = await Geolocator.RequestAccessAsync();
 
-
-            RandomAccessStreamReference mapBillboardStreamReference =
+            // Create a randon access Stream reference of the location icon
+            RandomAccessStreamReference mapStreamReference =
                 RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/UserLocation.png"));
 
             switch (access)
             {
-                case GeolocationAccessStatus.Allowed:
+                case GeolocationAccessStatus.Allowed: // If access status is allowed
 
+                    // Creata a new geolocator with a desired accuracy of what ever is possible
                     Geolocator geolocator = new Geolocator { DesiredAccuracyInMeters = 0 };
                     geolocator.StatusChanged += Geolocator_StatusChanged;
+                    // Getting position of user
                     Geoposition pos = await geolocator.GetGeopositionAsync();
 
-
+                    // Creating a Basic Geoposition
                     BasicGeoposition snPosition = new BasicGeoposition();
 
+                    // setting snPosition latitude and longitude with the pos coodinates of the user
                     snPosition.Latitude = (float)pos.Coordinate.Point.Position.Latitude;
                     snPosition.Longitude = (float)pos.Coordinate.Point.Position.Longitude;
 
+                    //Creating a new map icon
                     MapIcon mapIcon = new MapIcon();
-
+                    // Setting the location of the map icon
                     mapIcon.Location = new Geopoint(snPosition);
+                    // Setting title
                     mapIcon.Title = "Your Position";
-                    mapIcon.Image = mapBillboardStreamReference;
+                    // Setting map icon image
+                    mapIcon.Image = mapStreamReference;
+                    // Adding icon to the map
                     MapControl1.MapElements.Add(mapIcon);
+                    // Zooming map around user
                     MapControl1.Center = new Geopoint(snPosition);
                     MapControl1.ZoomLevel = 17;
-
+                   
+                    // Updating Tile
                     tileNotification((double)pos.Coordinate.Point.Position.Latitude, (double)pos.Coordinate.Point.Position.Longitude);
 
                     break;
@@ -301,6 +345,7 @@ namespace appDevProject
         #region Pivot Option Changed Event Method
         private void pvtOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Calling the refresh button
             refresh();
         }
         #endregion
@@ -309,36 +354,46 @@ namespace appDevProject
 
         private async void togLocation_ToggledAsync(object sender, RoutedEventArgs e)
         {
+            // Checking access
             var access = await Geolocator.RequestAccessAsync();
 
+            // if access is true
             if (togLocation.IsOn == true)
             {
+                // Allowed to access users location
                 access = GeolocationAccessStatus.Allowed;
             }
             else
             {
+                // Disallowed to access user location
                 access = GeolocationAccessStatus.Denied;
-
             }
         }
         private void MapControl1_MapElementClick(MapControl sender, MapElementClickEventArgs args)
-        {          
+        {  
+            // Event for when user clicks a bus stop on the map
             MapIcon myClickedIcon = args.MapElements.FirstOrDefault(x => x is MapIcon) as MapIcon;
+            // Making a grid visable which displays bus arrival times
             grdMapStopTimes.Visibility = Visibility.Visible;      
+            // Populating grid
             getSearchResults((string)myClickedIcon.Tag, 3);
         }
         private void btnCloseBox_Click(object sender, RoutedEventArgs e)
         {
+            // Collapsing grid
             grdMapStopTimes.Visibility = Visibility.Collapsed;
+            // Clearing results from grid
             lvListMapTimes.ItemsSource = null;
             lvListMapTimes.Items.Clear();
 
         }
         private void Item1_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Start ID1: " + stopID1);
+            // Getting an instance of the selected menu flyout item
             MenuFlyoutItem click = (MenuFlyoutItem)sender;
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+            //Storing the new selection 
             stopName1 = click.Text;
             stopID1 = searchID(stopName1);
             localSettings.Values["stopName1"] = stopName1;
@@ -349,9 +404,11 @@ namespace appDevProject
         }
         private void Item2_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Start ID2: " + stopID2);
+            // Getting an instance of the selected menu flyout item
             MenuFlyoutItem click = (MenuFlyoutItem)sender;
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            
+            //Storing the new selection 
             stopName2 = click.Text;
             stopID2 = searchID(stopName2);
             localSettings.Values["stopName2"] = stopName2;
@@ -361,6 +418,7 @@ namespace appDevProject
         }
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
+            // Calling the refresh button
             refresh();
         }
         #endregion
@@ -372,26 +430,30 @@ namespace appDevProject
 
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
+            // Assigning variables with the localSettings of stopID1, stopID2, stopName1 and stopName2
             stopID1 = (string)localSettings.Values["stopID1"];
             stopID2 = (string)localSettings.Values["stopID2"];
             stopName1 = (string)localSettings.Values["stopName1"];
             stopName2 = (string)localSettings.Values["stopName2"];
 
+            // If either stopID1 or stopID2 are empty return to FirstTimeUser page 
             if (string.IsNullOrEmpty(stopID1) || string.IsNullOrEmpty(stopID2))
             {
                 System.Diagnostics.Debug.WriteLine("Is empty..");
                 localSettings.Values["IsFirstTime"] = true;
+                // Navigating back to FirstTimeUser page
                 this.Frame.Navigate(typeof(FirstTimeUser));
             }
             else
             {
+                // Populate listboxes with bus arrival times
                 getSearchResults(stopID1, 1);
                 getSearchResults(stopID2, 2);
-
+                // Get bus stops for settings pivot
                 getBusStops();
-
+                // Set map
                 setMap();
-
+                // Populate map with icons
                 populateSettings();
             }
         }

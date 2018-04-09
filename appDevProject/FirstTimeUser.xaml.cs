@@ -60,6 +60,7 @@ namespace UWP_Main_App
         #region getBusStops - A method which makes a get request and retreves all the bus-stop data in the Co. Galway area. 
         async void getBusStops()
         {
+            // Adpted from : https://www.youtube.com/watch?v=UMQ2JVOE_xE
 
             try
             {
