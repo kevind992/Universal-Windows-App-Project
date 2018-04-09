@@ -68,11 +68,12 @@ namespace UWP_Main_App
                 // Url where the get request will be sent too
                 string url = "http://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?&operator=BE&format=json%22";
 
-                //
+                // Using HttpClient
                 HttpClient client = new HttpClient();
                 // Making get request and storing responce in response2
                 string response = await client.GetStringAsync(url);
-
+                // Using Newtonsoft Json to parse the responce. 
+                // This uses c# class BusStopData
                 var busData = JsonConvert.DeserializeObject<Rootobject>(response);
 
                 System.Diagnostics.Debug.WriteLine("Loading Data..");
@@ -88,15 +89,23 @@ namespace UWP_Main_App
                         if (busData.results[i].longitude > galLongLeft && busData.results[i].longitude < galLongRight)
                         {
                             // Creating an instance of MenuFlyoutItem
-                            MenuFlyoutItem item = new MenuFlyoutItem();
+                            MenuFlyoutItem item1 = new MenuFlyoutItem();
                             // Assigning it a name
-                            item.Text = busData.results[i].fullname.ToString();
+                            item1.Text = busData.results[i].fullname.ToString();
                             // Assigning it with a click event
-                            item.Click += Item_Click1;
+                            item1.Click += Item_Click1;
+                            // Adding item into flyStops1
+                            flyStops1.Items.Add(item1);
 
-                            // Adding item into flyStops1 and flyStops2
-                            flyStops1.Items.Add(item);  
-                            flyStops2.Items.Add(item);
+                            // Creating another instance of MenuFlyoutItem
+                            MenuFlyoutItem item2 = new MenuFlyoutItem();
+                            // Assigning it a name
+                            item2.Text = busData.results[i].fullname.ToString();
+                            // Assigning it with a click event
+                            item2.Click += Item_Click1;
+                            // Adding item into flyStops2
+                            flyStops2.Items.Add(item2);
+
                             galwayStops.Add(busData.results[i]);
                         }
                     }
@@ -114,49 +123,54 @@ namespace UWP_Main_App
         #endregion
        
         #region Click Methods
+        // Click event for selected stop1
         private void Item_Click1(object sender, RoutedEventArgs e)
         {
+            // Getting an instance of selected Menu Flyout item
             MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            // Assigning tblStop1 with the text of the selected flyout item
             tblStop1.Text = click.Text;
             stopName1 = click.Text;
-            System.Diagnostics.Debug.WriteLine(stopName1);
+            // stop1 has been selected for set stopSel to true
             stop1Sel = true;
-            System.Diagnostics.Debug.WriteLine("Stop 1 is: " + stop1Sel);
         }
+        // Click event for selected stop2
         private void Item_Click2(object sender, RoutedEventArgs e)
         {
+            // Getting an instance of selected Menu Flyout item
             MenuFlyoutItem click = (MenuFlyoutItem)sender;
+            // Assigning tblStop2 with the text of the selected flyout item
             stopName2 = click.Text;
             tblStop2.Text = click.Text;
-            System.Diagnostics.Debug.WriteLine(stopName2);
+            // stop2 has been selected for set stopSel to true
             stop2Sel = true;
-            System.Diagnostics.Debug.WriteLine("Stop 2 is: " + stop2Sel);
         }
+        // Button click event for submit button
         private async void btnSubmit_ClickAsync(object sender, RoutedEventArgs e)
         {
-
+            // Setting localSettings 
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
+            
+            // if both stop1Sel and stop2Sel are false which means that two stops were not selected. 
             if (stop1Sel == false || stop2Sel == false)
             {
+                // Display a message to the user
                 MessageDialog message = new MessageDialog("Two Bus-stop need to be selected before continuing..");
                 await message.ShowAsync();
-                System.Diagnostics.Debug.WriteLine("Not passed if statement..");
             }
-            else
+            else // Both stops were selected, user can progress
             {
-                System.Diagnostics.Debug.WriteLine("Passed if statement..");
+                // Getting the stopId's for the two selected stops 
                 stopID1 = searchID(stopName1);
                 stopID2 = searchID(stopName2);
 
-                System.Diagnostics.Debug.WriteLine(stopID1);
-                System.Diagnostics.Debug.WriteLine(stopID2);
-
+                // Storing stopID1, stopID2, StopName1 and stopName2 to localSettings
                 localSettings.Values["stopID1"] = stopID1;
                 localSettings.Values["stopID2"] = stopID2;
                 localSettings.Values["stopName1"] = stopName1;
                 localSettings.Values["stopName2"] = stopName2;
 
+                // Navigate to MainPage once the localSettings have been stored
                 Frame.Navigate(typeof(MainPage));
             }
         }
@@ -165,15 +179,19 @@ namespace UWP_Main_App
         #region searchId - A method for searching the stopId for the selected stop name
         private string searchID(string s)
         {
+            // creating an empty string
             string id = "";
-
+            //Looping throught all the stops
             for (int i = 0; i < galwayStops.Count; i++)
             {
+                // if the 2 stops match
                 if (galwayStops[i].fullname.Equals(s))
                 {
+                    // store the id
                     id = galwayStops[i].stopid;
                 }
             }
+            // Returning the id
             return id;
         }
         #endregion
@@ -183,16 +201,21 @@ namespace UWP_Main_App
         {
             base.OnNavigatedTo(e);
 
+            // Getting local settings
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
+            //If localSettings - IsFirstTime is null, i.e first time app has been run
             if (localSettings.Values["IsFirstTime"] == null)
             {
+                // set to true
                 localSettings.Values["IsFirstTime"] = true;
             }
-
+            //if contains a bool, i.e. not null
             if ((bool)localSettings.Values["IsFirstTime"])
             {
+                // Set to false
                 localSettings.Values["IsFirstTime"] = false;
+                // Navigate to MainPage
                 this.Frame.Navigate(typeof(MainPage));
             }
 
@@ -200,7 +223,7 @@ namespace UWP_Main_App
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
+            // Displaying welcome message when user arrives for the first time
             showWelcomeMessageAsync();        
         }
         #endregion
@@ -208,6 +231,7 @@ namespace UWP_Main_App
         #region ShowWelcomeMessageAsync - When app is first opened a welcome message is shown to user 
         private async System.Threading.Tasks.Task showWelcomeMessageAsync()
         {
+            // Welcome Message shown to user when app first run
             MessageDialog message = new MessageDialog("Welcome to Commute! Please Select two Bus-Stops from the two select boxes on the on the right and Click the Submit Button.");
             await message.ShowAsync();
         }
