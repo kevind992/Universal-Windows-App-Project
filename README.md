@@ -15,8 +15,33 @@ sound, network service (connect to server for data), camera, multi touch gesture
 
 ## Running Commute
 
-## Services Used
+To run Commute you can either download the app throught the Microsoft App Store
 
+- https://www.microsoft.com/en-ie/store/p/commute/9p43846r5b45?cid=msft_web_search
+
+Or alternatively you can clone the git repository. To complete the next step GIT is also required on you PC. If you don't have GIT installed go to the link below and download and install GIT
+
+    https://git-scm.com/
+
+Once both has been installed you are ready to clone the go application
+To do this open a console window and navigate to the folder you which to clone the application into.
+Type the following command into the console window to clone the repository
+```sh
+$ git clone https://github.com/kevind992/Universal-Windows-App-Project.git
+```  
+Once the repository has been cloned open Visual Studio and open the open the solution. Depending on the version of visual studio you are running, you may need to rebuild the solution. 
+
+To run Commute press the run Local Machine button on the top middle of the Visual Studio screen. 
+
+Once the applcation is up and running you will be prompted to select two bus stops in the Co. Galway area and click the submit button.
+You will be redirected to a new page which will show you three pivots. The first pivot "Bus Times", will show you information on the two bus stops selected. The second pivot "Nearby" will show you a map with your location and all the Galway stops. When you select the stop a windows pops up showing you the information for the selected stop. The final pivot is "Settings". You are able to change your two selected stops and turn location on and off for the application.
+
+## UWP Services Used
+- Microsoft Azure Service. This is used for the Tile Noticiation. The applcation sends the latitude and longtude of the user to the Azure service. The service then calculates which bus stop is nearest to the user and sends this back to the main application which then is displayed as a tile notification.
+- Map Services. This is used for displaying a map and icons. 
+- HttpClient Services. This was used for making get requests to a restful API (Link below). Without this I wouldn't have been able to get all the bus stop information. 
+- Location Services. This was used to get the users location. By getting the users location is was able to plot there location on the map with an icon. I was also able to use there location to calculate which bus stop they were closest too.
+- Local Storage. I used local storage to store the users two selected bus stops. I also was able to store certain application variables to stop re-access to certain pages after submission and also to improve user expierence.   
 ## Recommendations for Future Development
 
 ## Technolegy Used
@@ -29,3 +54,4 @@ For my .net service application, I hosted it on Azure and coded on Visual Studio
 - https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/display-poi
 - https://www.youtube.com/watch?v=UMQ2JVOE_xE
 - https://channel9.msdn.com/Series/Windows-10-development-for-absolute-beginners/UWP-061-UWP-Weather-Updating-the-Tile-with-Periodic-Notifications
+- https://docs.microsoft.com/en-us/windows/uwp/networking/httpclient
