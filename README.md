@@ -16,9 +16,6 @@ sound, network service (connect to server for data), camera, multi touch gesture
 ## Running Commute
 
 To run Commute you can either download the app throught the Microsoft App Store
-
-- https://www.microsoft.com/en-ie/store/p/commute/9p43846r5b45?cid=msft_web_search
-
 Or alternatively you can clone the git repository. To complete the next step GIT is also required on you PC. If you don't have GIT installed go to the link below and download and install GIT
 
     https://git-scm.com/
@@ -37,6 +34,11 @@ Once the applcation is up and running you will be prompted to select two bus sto
 You will be redirected to a new page which will show you three pivots. The first pivot "Bus Times", will show you information on the two bus stops selected. The second pivot "Nearby" will show you a map with your location and all the Galway stops. When you select the stop a windows pops up showing you the information for the selected stop. The final pivot is "Settings". You are able to change your two selected stops and turn location on and off for the application.
 ## Research and Development
 Before I attempted to code out the application I researched to see with there were publicly available API's which I could use to get live information Irish bus information. I found that this was available throught the data.gov.ie website. 
+### API Call Example
+https://data.smartdublin.ie/cgi-bin/rtpi/busstopinformation?stopid=184&format=json
+
+![capture](https://user-images.githubusercontent.com/31921534/38560180-f3b2a688-3ccc-11e8-9ee2-eed43c1c1d72.PNG)
+
 ## UWP Services Used
 - Microsoft Azure Service. This is used for the Tile Noticiation. The applcation sends the latitude and longtude of the user to the Azure service. The service then calculates which bus stop is nearest to the user and sends this back to the main application which then is displayed as a tile notification.
 - Map Services. This is used for displaying a map and icons. 
