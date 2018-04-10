@@ -99,6 +99,8 @@ For future development,
 ## Technolegy Used
 For developing this application, I did all my coding using Visual Studio 2017.
 For my .net service application, I hosted it on Azure and coded on Visual Studio 2017.
+## Known Bugs
+There may be a bug in the application if the PC you are running does not have GPS. May cause application to crash. I am currently working on a fix for this issue.
 ## References
 - https://data.gov.ie/dataset/real-time-passenger-information-rtpi-for-dublin-bus-bus-eireann-luas-and-irish-rail
 - https://docs.microsoft.com/en-us/windows/uwp/design/basics/navigate-between-two-pages
