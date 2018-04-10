@@ -35,15 +35,19 @@ To run Commute press the run Local Machine button on the top middle of the Visua
 
 Once the applcation is up and running you will be prompted to select two bus stops in the Co. Galway area and click the submit button.
 You will be redirected to a new page which will show you three pivots. The first pivot "Bus Times", will show you information on the two bus stops selected. The second pivot "Nearby" will show you a map with your location and all the Galway stops. When you select the stop a windows pops up showing you the information for the selected stop. The final pivot is "Settings". You are able to change your two selected stops and turn location on and off for the application.
-
+## Research and Development
+Before I attempted to code out the application I researched to see with there were publicly available API's which I could use to get live information Irish bus information. I found that this was available throught the data.gov.ie website. 
 ## UWP Services Used
 - Microsoft Azure Service. This is used for the Tile Noticiation. The applcation sends the latitude and longtude of the user to the Azure service. The service then calculates which bus stop is nearest to the user and sends this back to the main application which then is displayed as a tile notification.
 - Map Services. This is used for displaying a map and icons. 
 - HttpClient Services. This was used for making get requests to a restful API (Link below). Without this I wouldn't have been able to get all the bus stop information. 
 - Location Services. This was used to get the users location. By getting the users location is was able to plot there location on the map with an icon. I was also able to use there location to calculate which bus stop they were closest too.
 - Local Storage. I used local storage to store the users two selected bus stops. I also was able to store certain application variables to stop re-access to certain pages after submission and also to improve user expierence.   
-## Recommendations for Future Development
-
+## Ideas for Future Development
+For future development,
+- I would like to improve the tile notification service. I would like to set a system that sends the user a notification when there next bus is due. The user could specify times in the day that they wish to recieve notification ie. if the user commutes in the morning at 9 times and returns home around 5, the user would only recieve notifications around that time.
+- I would like to add more modes of transports, ie Train, Tram and other bus companies. I would also like to add more cities available. The user would be able to select what city and what more of transport they commute with.
+- I would also like to improve the first time user page. I would like to make the page more visually pleasing.
 ## Technolegy Used
 For developing this application, I did all my coding using Visual Studio 2017.
 For my .net service application, I hosted it on Azure and coded on Visual Studio 2017.
