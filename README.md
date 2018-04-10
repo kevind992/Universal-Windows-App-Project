@@ -1,8 +1,8 @@
 # README
 
 ## Introduction
-As part of one of my 3rd year modules we had to develope a Universal Windows App. I developed an app called Commute.
-Commute is a real time app for bus eirrean services in the Co. Galway area. It provides real time departure information and
+As part of one of my 3rd year modules we had to develop a Universal Windows App. I developed an app called Commute.
+Commute is a real time app for Bus Eirrean services in the Co. Galway area. It provides real time departure information and
 bus stop locations using a an interactive map.
 
 ## Project Spec Guidelines
@@ -43,8 +43,54 @@ https://data.smartdublin.ie/cgi-bin/rtpi/busstopinformation?stopid=184&format=js
 - Microsoft Azure Service. This is used for the Tile Noticiation. The applcation sends the latitude and longtude of the user to the Azure service. The service then calculates which bus stop is nearest to the user and sends this back to the main application which then is displayed as a tile notification.
 - Map Services. This is used for displaying a map and icons. 
 - HttpClient Services. This was used for making get requests to a restful API (Link below). Without this I wouldn't have been able to get all the bus stop information. 
+Code snippet for a Http get request:
+```
+// Url which is used for making the get request
+string url = "http://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stop + "&format=json";
+//Creating a Http client
+HttpClient client = new HttpClient();
+// Making the request and putting the response into responce
+string response = await client.GetStringAsync(url);
+// Parsing the data using NewtonJson package
+var data = JsonConvert.DeserializeObject<RootBusStopTimeObject>(response);
+```
 - Location Services. This was used to get the users location. By getting the users location is was able to plot there location on the map with an icon. I was also able to use there location to calculate which bus stop they were closest too.
-- Local Storage. I used local storage to store the users two selected bus stops. I also was able to store certain application variables to stop re-access to certain pages after submission and also to improve user expierence.   
+Code snippet for getting user location:
+```
+// Creata a new geolocator with a desired accuracy of what ever is possible
+Geolocator geolocator = new Geolocator { DesiredAccuracyInMeters = 0 };
+geolocator.StatusChanged += Geolocator_StatusChanged;
+// Getting position of user
+Geoposition pos = await geolocator.GetGeopositionAsync();
+
+// Creating a Basic Geoposition
+BasicGeoposition snPosition = new BasicGeoposition();
+
+// setting snPosition latitude and longitude with the pos coodinates of the user
+snPosition.Latitude = (float)pos.Coordinate.Point.Position.Latitude;
+snPosition.Longitude = (float)pos.Coordinate.Point.Position.Longitude;
+```
+- Local Storage. I used local storage to store the users two selected bus stops. I also was able to store certain application variables to stop re-access to certain pages after submission and also to improve user expierence.
+Code snippet for Local Storage:
+```
+// Getting local settings
+ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+//If localSettings - IsFirstTime is null, i.e first time app has been run
+if (localSettings.Values["IsFirstTime"] == null)
+{
+    // set to true
+    localSettings.Values["IsFirstTime"] = true;
+}
+//if contains a bool, i.e. not null
+if ((bool)localSettings.Values["IsFirstTime"])
+{
+    // Set to false
+    localSettings.Values["IsFirstTime"] = false;
+    // Navigate to MainPage
+    this.Frame.Navigate(typeof(MainPage));
+}
+```
 ## Ideas for Future Development
 For future development,
 - I would like to improve the tile notification service. I would like to set a system that sends the user a notification when there next bus is due. The user could specify times in the day that they wish to recieve notification ie. if the user commutes in the morning at 9 times and returns home around 5, the user would only recieve notifications around that time.
