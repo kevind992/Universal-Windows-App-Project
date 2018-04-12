@@ -39,6 +39,8 @@ https://data.smartdublin.ie/cgi-bin/rtpi/busstopinformation?stopid=184&format=js
 
 ![capture](https://user-images.githubusercontent.com/31921534/38560180-f3b2a688-3ccc-11e8-9ee2-eed43c1c1d72.PNG)
 
+I decided I wanted to create a two page application. One page is for setting up the application and the second page would be the main page. It contains 3 pivots. The first pivot contains information on the two selected bus stops. The second pivot contains a map and shows all the  bus stops in the Co. Galway area. The main reason I wanted to include a map was to show all the bus stops and the user location. I created two icons using Gimp 2 and assigned one to the user location and the other icon to all the bus stops. 
+The third pivit contains all the settings. The user has an option to change selected stops and turn off location services. I tried to keep the UI as close as I could to the UI on windows settings.
 ## UWP Services Used
 - Microsoft Azure Service. This is used for the Tile Noticiation. The applcation sends the latitude and longtude of the user to the Azure service. The service then calculates which bus stop is nearest to the user and sends this back to the main application which then is displayed as a tile notification.
 - Map Services. This is used for displaying a map and icons. 
@@ -99,6 +101,7 @@ For future development,
 ## Technolegy Used
 For developing this application, I did all my coding using Visual Studio 2017.
 For my .net service application, I hosted it on Azure and coded on Visual Studio 2017.
+For my Logo's and Map Icon's, I used Gimp 2.
 ## Known Bugs
 There may be a bug in the application if the PC you are running does not have GPS. May cause application to crash. I am currently working on a fix for this issue.
 ## References
